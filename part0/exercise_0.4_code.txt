@@ -1,0 +1,44 @@
+title exercise 0.4
+
+browser->server: HTTP POST /exampleapp/new_note
+note over server:
+The server takes the data
+from the form and pushes the note 
+to an array of notes.
+end note
+
+note over server:
+notes.push({
+    content: req.body.note,
+    date: new Date(),
+  })
+end note
+server-->browser: 302 RESPONSE Location: /exampleapp/notes
+
+note over browser:
+The server ask the browser to do
+a new GET request to the address
+specified in the header's Location:
+/exampleapp/notes
+end note
+
+browser->server: HTTP GET /exampleapp/notes
+server-->browser: HTML-code
+
+browser->server: HTTP GET /exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET /exampleapp/main.js
+server-->browser: main.js
+
+note over browser:
+browser starts executing js-code
+that requests JSON data from server 
+end note
+
+browser->server: HTTP GET /exampleapp/data.json
+server-->browser: [{ content: "mememagic", date: "2022-12-08" }, ...]
+
+note over browser:
+browser executes the event handler
+that renders notes to display
+end note

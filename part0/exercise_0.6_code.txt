@@ -1,0 +1,46 @@
+title exercise 0.6
+
+note over browser:
+The user press the "Save" 
+button in the form
+end note
+
+note over browser:
+e.preventDefault()
+prevents the default behavior
+of the form (sending data to
+the server and cause a GET
+request)
+end note
+
+note over browser:
+The browser then pushes the
+data into an array. Cleans
+the input field in the form
+and rerenders the notes to
+display
+end note
+
+note over browser:
+sendToServer(note)
+Sends the new note to
+the server. Which causes
+a POST request
+end note
+
+browser->server: HTTP POST exampleapp/new_note_spa
+
+note over server:
+Server responds with 201
+status code CREATED.
+Also it sends back JSON telling
+that the note was created.
+end note
+
+server-->browser: RESPONSE 201 {"message":"note created"}
+
+note over browser:
+The page doesn't reload,
+server did not ask
+for a redirect.
+end note
