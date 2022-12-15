@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { id: 0, 
+    { id: 1, 
       name: 'Arto Hellas' 
     }
   ]) 
@@ -15,7 +15,7 @@ const App = () => {
   const addPerson = (e) => {
     e.preventDefault();
     const person = {
-      id: persons.length,
+      id: persons.length + 1,
       name: newName
     }
 
