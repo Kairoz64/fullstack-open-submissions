@@ -1,19 +1,13 @@
-const Countries = ({countries}) => {
-  if (countries.length > 10) {
-    return <div>Too many matches, specify another filter</div>;
+import { useState } from 'react';
+
+const Country = ({country, initialDetails=false}) => {
+  const [showDetails, setShowDetails] = useState(initialDetails);
+
+  const handleClick = () => {
+    setShowDetails(true);
   }
 
-  else if (countries.length === 1) {
-    return <Country country={countries[0]} details={true}/>;
-  }
-
-  else {
-    return countries.map(country => <Country key={country.cca2} country={country}/>);
-  }
-}
-
-const Country = ({country, details=false}) => {
-  if (details) {
+  if (showDetails) {
     return (
       <div>
         <h2>{country.name.common}</h2>
@@ -30,7 +24,21 @@ const Country = ({country, details=false}) => {
   }
 
   else {
-    return <div>{country.name.common}</div>
+    return <div>{country.name.common}<button onClick={handleClick}>show</button></div>;
+  }
+}
+
+const Countries = ({countries}) => {
+  if (countries.length > 10) {
+    return <div>Too many matches, specify another filter</div>;
+  }
+
+  else if (countries.length === 1) {
+    return <Country country={countries[0]} initialDetails={true}/>;
+  }
+
+  else {
+    return countries.map(country => <Country key={country.cca2} country={country}/>);
   }
 }
 
