@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import Weather from './Weather';
 
-const Country = ({country, initialDetails=false}) => {
-  const [showDetails, setShowDetails] = useState(initialDetails);
+const Country = ({country, details=false}) => {
+  const [showDetails, setShowDetails] = useState(details);
 
   const handleClick = () => {
     setShowDetails(true);
@@ -34,7 +35,15 @@ const Countries = ({countries}) => {
   }
 
   else if (countries.length === 1) {
-    return <Country country={countries[0]} initialDetails={true}/>;
+    const country = countries[0];
+    return (
+      <>
+        <Country country={country} details/>
+        <Weather lat={country.capitalInfo.latlng[0]} 
+                 long={country.capitalInfo.latlng[1]}
+                 capital={country.capital[0]}/>
+      </>
+    );
   }
 
   else {
