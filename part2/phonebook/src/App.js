@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import personService from './services/persons';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
@@ -53,6 +52,15 @@ const App = () => {
     })
   }
 
+  const deletePerson = (id) => {
+    personService
+    .erase(id)
+    .then(() => {
+      const newPersons = persons.filter(person => person.id !== id)
+      setPersons(newPersons);
+    })
+  }
+
   useEffect(() => {
     personService
     .getAll()
@@ -74,7 +82,7 @@ const App = () => {
         onSubmit={addPerson}
       />
       <h3>Numbers</h3>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deletePerson={deletePerson}/>
     </div>
   )
 }
