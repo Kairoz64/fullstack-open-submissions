@@ -53,12 +53,15 @@ const App = () => {
   }
 
   const deletePerson = (id) => {
-    personService
-    .erase(id)
-    .then(() => {
-      const newPersons = persons.filter(person => person.id !== id)
-      setPersons(newPersons);
-    })
+    const personById = persons.find(person => person.id === id);
+    if (window.confirm(`Delete ${personById.name}?`)) {
+      personService
+      .erase(id)
+      .then(() => {
+        const newPersons = persons.filter(person => person.id !== id)
+        setPersons(newPersons);
+      })
+    }
   }
 
   useEffect(() => {
