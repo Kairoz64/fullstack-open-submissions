@@ -3,12 +3,15 @@ import personService from './services/persons';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import Notification from './components/Notification';
+import './index.css';
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [term, setTerm] = useState('')
+  const [message, setMessage] = useState(null)
 
   const personsToShow = !term
     ? persons
@@ -46,6 +49,10 @@ const App = () => {
           setPersons(updatedPersons);
           setNewName('');
           setNewPhone('');
+          setMessage(`Updated ${updatedPerson.name}`);
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000);
         })
       }
       return;
@@ -57,6 +64,10 @@ const App = () => {
       setPersons(persons.concat(newPerson));
       setNewName('');
       setNewPhone('');
+      setMessage(`Added ${newPerson.name}`);
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000);
     })
   }
 
@@ -68,6 +79,10 @@ const App = () => {
       .then(() => {
         const newPersons = persons.filter(person => person.id !== id)
         setPersons(newPersons);
+        setMessage(`Deleted ${personById.name}`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000);
       })
     }
   }
@@ -83,6 +98,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message}/>
       <Filter term={term} onChange={handleTermChange}/>
       <h3>add a new</h3>
       <PersonForm 
