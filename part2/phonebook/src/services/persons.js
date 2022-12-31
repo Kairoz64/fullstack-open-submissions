@@ -11,6 +11,11 @@ const create = newPerson => {
 	return request.then(response => response.data);
 }
 
+const changePerson = (id, person) => {
+	const request = axios.put(`${baseUrl}/${id}`, person);
+	return request.then(response => response.data);
+}
+
 const erase = id => {
 	const request = axios.delete(`${baseUrl}/${id}`);
 	return request.then(() => {return})
@@ -20,6 +25,7 @@ const erase = id => {
 const person = {
 	getAll,
 	create,
+	changePerson,
 	erase
 }
 

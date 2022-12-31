@@ -29,18 +29,26 @@ const App = () => {
   const addPerson = (e) => {
     e.preventDefault();
     const person = {
-      id: persons.length + 1,
       name: newName,
-      phone: newPhone
+      phone: newPhone,
+      id: persons.length + 1
     }
 
-    for (let i = 0; i<persons.length; i++) {
-      if (persons[i].name === newName) {
-        alert(`${newName} is already added to the phonebook`);
-        setNewName('');
-        setNewPhone('');
-        return;
+    const personByName = persons.find(person => person.name === newName);
+
+    if (personByName) {
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        const updatedPerson = {...person, id: personByName.id}
+        personService
+        .changePerson(updatedPerson.id, updatedPerson)
+        .then(updatedPerson => {
+          const updatedPersons = persons.map(p => p.id === updatedPerson.id ? updatedPerson : p)
+          setPersons(updatedPersons);
+          setNewName('');
+          setNewPhone('');
+        })
       }
+      return;
     }
 
     personService
