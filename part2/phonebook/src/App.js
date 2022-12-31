@@ -12,6 +12,7 @@ const App = () => {
   const [newPhone, setNewPhone] = useState('')
   const [term, setTerm] = useState('')
   const [message, setMessage] = useState(null)
+  const [error, setError] = useState(false)
 
   const personsToShow = !term
     ? persons
@@ -53,6 +54,17 @@ const App = () => {
           setTimeout(() => {
             setMessage(null)
           }, 5000);
+        })
+        .catch(err => {
+          setError(true);
+          setMessage(`Information of ${updatedPerson.name} has already been removed from server`);
+          setTimeout(() => {
+            setMessage(null);
+            setError(false);
+          }, 5000);
+          setPersons(persons.filter(p => p.id !== updatedPerson.id))
+          setNewName('');
+          setNewPhone('');
         })
       }
       return;
@@ -98,7 +110,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message}/>
+      <Notification message={message} error={error}/>
       <Filter term={term} onChange={handleTermChange}/>
       <h3>add a new</h3>
       <PersonForm 
