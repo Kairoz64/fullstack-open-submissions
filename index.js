@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express()
 
-let numbers = [
+let persons = [
   { 
     "id": 1,
     "name": "Arto Hellas", 
@@ -23,6 +23,10 @@ let numbers = [
     "number": "39-23-6423122"
   }
 ]
+
+app.get('/api/persons', (req, res) => {
+	res.json(persons);
+});
 
 const PORT = 3001;
 app.listen(PORT, () => {
