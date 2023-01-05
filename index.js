@@ -28,6 +28,12 @@ app.get('/api/persons', (req, res) => {
 	res.json(persons);
 });
 
+app.get('/api/persons/:id', (req, res) => {
+	const id = parseInt(req.params.id);
+	const person = persons.find(p => p.id === id);
+	res.json(person);
+});
+
 app.get('/info', (req, res) => {
 	let numberOfPeople = persons.length
 	let date = new Date();
