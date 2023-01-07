@@ -1,6 +1,12 @@
 const express = require('express');
 const app = express()
 
+app.use(express.json())
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max) + 1;
+}
+
 let persons = [
   { 
     "id": 1,
@@ -24,6 +30,12 @@ let persons = [
   }
 ]
 
+app.get('/info', (req, res) => {
+  let numberOfPeople = persons.length
+  let date = new Date();
+  res.send(`<p>Phonebook has info for ${numberOfPeople} people</p><p>${date}</p>`);
+});
+
 app.get('/api/persons', (req, res) => {
 	res.json(persons);
 });
@@ -31,7 +43,12 @@ app.get('/api/persons', (req, res) => {
 app.get('/api/persons/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 	const person = persons.find(p => p.id === id);
-	res.json(person);
+
+  if (person) {
+    res.json(person);
+  } else {
+    res.status(404).end()
+  }
 });
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -42,10 +59,8 @@ app.delete('/api/persons/:id', (req, res) => {
 	res.status(204).end()
 });
 
-app.get('/info', (req, res) => {
-	let numberOfPeople = persons.length
-	let date = new Date();
-	res.send(`<p>Phonebook has info for ${numberOfPeople} people</p><p>${date}</p>`);
+app.post('/api/persons', (req, res) => {
+  const newId = getRandomInt(2000000);
 });
 
 const PORT = 3001;
