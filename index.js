@@ -2,12 +2,19 @@ const express = require('express');
 const morgan = require('morgan');
 
 const app = express()
-app.use(express.json())
-app.use(morgan('tiny'))
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max) + 1;
 }
+
+morgan.token('body', (req, res) => {
+  if (req.method === 'POST') {
+    return JSON.stringify(req.body);
+  }
+})
+
+app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = [
   { 
