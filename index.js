@@ -62,7 +62,7 @@ app.delete('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
-  if (!body.name) {
+  if (!body.name || !body.number) {
     return res.status(400).json({
       error: 'content missing'
     });
@@ -72,6 +72,14 @@ app.post('/api/persons', (req, res) => {
     id: getRandomInt(2000000),
     name: body.name,
     number: body.number
+  }
+
+  const duplicate = persons.find(p => p.name === person.name)
+
+  if (duplicate) {
+    return res.status(400).json({
+      error: 'duplicate name'
+    });
   }
 
   persons = persons.concat(person);
