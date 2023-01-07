@@ -60,7 +60,22 @@ app.delete('/api/persons/:id', (req, res) => {
 });
 
 app.post('/api/persons', (req, res) => {
-  const newId = getRandomInt(2000000);
+  const body = req.body
+
+  if (!body.name) {
+    return res.status(400).json({
+      error: 'content missing'
+    });
+  }
+
+  const person = {
+    id: getRandomInt(2000000),
+    name: body.name,
+    number: body.number
+  }
+
+  persons = persons.concat(person);
+  res.json(person);
 });
 
 const PORT = 3001;
