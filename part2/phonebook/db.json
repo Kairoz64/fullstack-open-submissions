@@ -2,27 +2,27 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "phone": "040-123456",
+      "number": "040-123456",
       "id": 1
     },
     {
       "name": "Ada Lovelace",
-      "phone": "39-44-5323523",
+      "number": "39-44-5323523",
       "id": 2
     },
     {
       "name": "Mary Poppendieck",
-      "phone": "39-23-6423122",
+      "number": "39-23-6423122",
       "id": 3
     },
     {
       "name": "Chencho Perez",
-      "phone": "888-888-888",
+      "number": "888-888-888",
       "id": 4
     },
     {
       "name": "Checha Rodriguez",
-      "phone": "222-222-222",
+      "number": "222-222-222",
       "id": 5
     }
   ]

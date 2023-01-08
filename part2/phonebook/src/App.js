@@ -9,7 +9,7 @@ import './index.css';
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
-  const [newPhone, setNewPhone] = useState('')
+  const [newNumber, setNewNumber] = useState('')
   const [term, setTerm] = useState('')
   const [message, setMessage] = useState(null)
   const [error, setError] = useState(false)
@@ -22,8 +22,8 @@ const App = () => {
     setNewName(e.target.value);
   }
 
-  const handlePhoneChange = (e) => {
-    setNewPhone(e.target.value);
+  const handleNumberChange = (e) => {
+    setNewNumber(e.target.value);
   }
 
   const handleTermChange = (e) => {
@@ -34,7 +34,7 @@ const App = () => {
     e.preventDefault();
     const person = {
       name: newName,
-      phone: newPhone,
+      number: newNumber,
       id: persons.length + 1
     }
 
@@ -49,7 +49,7 @@ const App = () => {
           const updatedPersons = persons.map(p => p.id === updatedPerson.id ? updatedPerson : p)
           setPersons(updatedPersons);
           setNewName('');
-          setNewPhone('');
+          setNewNumber('');
           setMessage(`Updated ${updatedPerson.name}`);
           setTimeout(() => {
             setMessage(null)
@@ -64,7 +64,7 @@ const App = () => {
           }, 5000);
           setPersons(persons.filter(p => p.id !== updatedPerson.id))
           setNewName('');
-          setNewPhone('');
+          setNewNumber('');
         })
       }
       return;
@@ -75,7 +75,7 @@ const App = () => {
     .then(newPerson => {
       setPersons(persons.concat(newPerson));
       setNewName('');
-      setNewPhone('');
+      setNewNumber('');
       setMessage(`Added ${newPerson.name}`);
       setTimeout(() => {
         setMessage(null)
@@ -115,9 +115,9 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm 
         name={newName} 
-        phone={newPhone} 
+        number={newNumber} 
         onChangeName={handleNameChange}
-        onChangePhone={handlePhoneChange}
+        onChangeNumber={handleNumberChange}
         onSubmit={addPerson}
       />
       <h3>Numbers</h3>
