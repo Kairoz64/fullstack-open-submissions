@@ -88,16 +88,16 @@ app.post('/api/persons', (req, res) => {
     number: body.number
   })
 
-  const duplicate = persons.find(p => p.name === person.name)
+  Person.findOne({name: person.name}).then((duplicate) => {
+    if (duplicate) {
+      return res.status(400).json({
+        error: 'duplicate name'
+      });
+    }
 
-  if (duplicate) {
-    return res.status(400).json({
-      error: 'duplicate name'
-    });
-  }
-
-  person.save().then(p => {
-    res.json(p);
+    person.save().then(p => {
+      res.json(p);
+    })
   })
 });
 
