@@ -52,15 +52,17 @@ app.get('/api/persons', (req, res) => {
   })
 });
 
-app.get('/api/persons/:id', (req, res) => {
-	const id = parseInt(req.params.id);
-	const person = persons.find(p => p.id === id);
+app.get('/api/persons/:id', (req, res, next) => {
+	const id = req.params.id;
 
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end()
-  }
+  Person.findById(id).then((p) => {
+    if (p) {
+      res.json(p);
+    } else {
+      res.status(404).end()
+    }
+  })
+  .catch(err => next(err))
 });
 
 app.delete('/api/persons/:id', (req, res, next) => {
