@@ -6,10 +6,6 @@ const Person = require('./models/person')
 
 const app = express()
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max) + 1;
-}
-
 morgan.token('body', (req, res) => {
   if (req.method === 'POST') {
     return JSON.stringify(req.body);
@@ -67,11 +63,13 @@ app.get('/api/persons/:id', (req, res) => {
   }
 });
 
-app.delete('/api/persons/:id', (req, res) => {
-	const id = parseInt(req.params.id);
-	persons = persons.filter(p => p.id !== id);
+app.delete('/api/persons/:id', (req, res, next) => {
+	const id = req.params.id;
 
-	res.status(204).end()
+  Person.findByIdAndRemove(id).then(p => {
+    res.status(204).end()
+  })
+  .catch(err => next(err))
 });
 
 app.post('/api/persons', (req, res) => {
@@ -100,6 +98,18 @@ app.post('/api/persons', (req, res) => {
     })
   })
 });
+
+const errorHandler = (err, req, res, next) => {
+  console.error(err.message)
+
+  if (err.name === 'CastError') {
+    return res.status(400).send({error: 'malformated id'})
+  }
+
+  next(err);
+}
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
