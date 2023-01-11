@@ -56,13 +56,21 @@ const App = () => {
           }, 5000);
         })
         .catch(err => {
-          setError(true);
-          setMessage(`Information of ${updatedPerson.name} has already been removed from server`);
+          if (err.response.data.code === 2) {
+            setError(true);
+            setMessage(`Information of ${updatedPerson.name} has already been removed from server`);
+            setPersons(persons.filter(p => p.id !== updatedPerson.id))
+          }
+
+          else {
+            setError(true);
+            setMessage(err.response.data.error);
+          }
+          
           setTimeout(() => {
             setMessage(null);
             setError(false);
           }, 5000);
-          setPersons(persons.filter(p => p.id !== updatedPerson.id))
           setNewName('');
           setNewNumber('');
         })
@@ -79,6 +87,16 @@ const App = () => {
       setMessage(`Added ${newPerson.name}`);
       setTimeout(() => {
         setMessage(null)
+      }, 5000);
+    })
+    .catch(err => {
+      setError(true);
+      setMessage(err.response.data.error);
+      setNewName('');
+      setNewNumber('');
+      setTimeout(() => {
+        setMessage(null);
+        setError(false);
       }, 5000);
     })
   }
