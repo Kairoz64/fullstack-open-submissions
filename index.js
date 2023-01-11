@@ -89,13 +89,20 @@ app.put('/api/persons/:id', (req, res, next) => {
     number: body.number
   }
 
-  Person.findByIdAndUpdate(id, person, {new: true}).then((p) => {
+  Person.findByIdAndUpdate(id, person, {new: true, runValidators: true, context: 'query'}).then((p) => {
+    if (p === null) {
+      return res.status(400).json({
+        error: 'resource doesn\'t exist',
+        code: 2
+      })
+    }
+
     res.json(p);
   })
   .catch(err => next(err))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
   if (!body.name || !body.number) {
@@ -119,6 +126,7 @@ app.post('/api/persons', (req, res) => {
     person.save().then(p => {
       res.json(p);
     })
+    .catch(error => next(error))
   })
 });
 
@@ -126,7 +134,19 @@ const errorHandler = (err, req, res, next) => {
   console.error(err.message)
 
   if (err.name === 'CastError') {
-    return res.status(400).send({error: 'malformated id'})
+    return res.status(400).json({error: 'malformated id'})
+  } 
+
+  else if (err.name == 'ValidationError') {
+    let messages = [];
+    const keys = Object.keys(err.errors) 
+    if (keys.includes('name')) {
+      messages.push('Length of name must be 3 characters minimum');
+    }
+    if (keys.includes('number')) {
+      messages.push('Invalid phone');
+    }
+    return res.status(400).json({ error: 'Validation Error: ' + messages.join(', ')})
   }
 
   next(err);
