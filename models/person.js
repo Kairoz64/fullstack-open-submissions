@@ -20,7 +20,24 @@ const personSchema = new mongoose.Schema({
 	},
 	number: {
 		type: String,
-		minLength: 3
+		validate: {
+				validator: function(n) {
+				let parts = n.split('-');
+				if (parts.length !== 2) {
+					return false;
+				}
+
+				if (parts[0].length !== 2 && parts[0].length !== 3) {
+					return false;
+				}
+
+				if (parts[0].length + parts[1].length < 8) {
+					return false;
+				}
+
+				return true;
+			}
+		}
 	}
 })
 
