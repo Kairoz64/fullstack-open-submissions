@@ -107,3 +107,17 @@ describe('author which has more blogs', () => {
     expect(listHelper.mostBlogs(blogs)).toEqual({ author: 'Robert C. Martin', blogs: 3 });
   });
 });
+
+describe('author whose blogs has the largest amount of likes', () => {
+  test('of a empty list of blogs is undefined', () => {
+    expect(listHelper.mostLikes([])).toEqual(undefined);
+  });
+
+  test('of a list which has one blog', () => {
+    expect(listHelper.mostLikes(oneBlog)).toEqual({ author: 'Michael Chan', likes: 7 });
+  });
+
+  test('of a list which has more than one blog', () => {
+    expect(listHelper.mostLikes(blogs)).toEqual({ author: 'Edsger W. Dijkstra', likes: 17 });
+  });
+});
