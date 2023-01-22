@@ -7,20 +7,16 @@ const Blog = require('../models/blog');
 
 const blogs = [
   {
-    _id: '5a422a851b54a676234d17f7',
     title: 'React patterns',
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
-    likes: 7,
-    __v: 0
+    likes: 7
   },
   {
-    _id: '5a422aa71b54a676234d17f8',
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
     url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-    __v: 0
+    likes: 5
   }
 ];
 
@@ -33,6 +29,11 @@ describe('Testing blog api' , () => {
   test('All blogs are fetched', async () => {
     const response = await api.get('/api/blogs');
     expect(response.body).toHaveLength(blogs.length);
+  });
+
+  test('Check if a blog have an id property', async () => {
+    const response = await api.get('/api/blogs');
+    expect(response.body[0].id).toBeDefined();
   });
 });
 
