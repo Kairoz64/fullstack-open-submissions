@@ -75,6 +75,38 @@ describe('Testing blog api' , () => {
     expect(response.body).toHaveLength(blogs.length + 1);
     expect(response.body.slice(-1)[0].likes).toBe(0);
   });
+
+  test('You can not add a blog missing a title', async () => {
+    const newBlog = {
+      author: 'Examplifly',
+      url: 'example.com',
+      likes: 30
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400);
+
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(blogs.length);
+  });
+
+  test('You can not add a blog missing an author', async () => {
+    const newBlog = {
+      title: 'Ipsum Lorem',
+      url: 'example.com',
+      likes: 30
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400);
+
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(blogs.length);
+  });
 });
 
 afterAll(async () => {
