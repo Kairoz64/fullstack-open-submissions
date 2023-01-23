@@ -56,6 +56,25 @@ describe('Testing blog api' , () => {
     expect(response.body).toHaveLength(blogs.length + 1);
     expect(titles).toContain('My new song');
   });
+
+  test('Adding a blog without likes property defaults to 0 likes', async () => {
+    const newBlog = {
+      title: 'Ipsum Lorem',
+      author: 'Examplifly',
+      url: 'example.com'
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const response = await api.get('/api/blogs');
+
+    expect(response.body).toHaveLength(blogs.length + 1);
+    expect(response.body.slice(-1).likes).toBe(0);
+  });
 });
 
 afterAll(async () => {
