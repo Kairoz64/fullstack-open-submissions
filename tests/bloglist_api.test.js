@@ -31,9 +31,30 @@ describe('Testing blog api' , () => {
     expect(response.body).toHaveLength(blogs.length);
   });
 
-  test('Check if a blog have an id property', async () => {
+  test('Checks if a blog have an id property', async () => {
     const response = await api.get('/api/blogs');
     expect(response.body[0].id).toBeDefined();
+  });
+
+  test('Checks if a valid blog can be added', async () => {
+    const newBlog = {
+      title: 'My new song',
+      author: 'Chencho Perez',
+      url: 'gatonco.com',
+      likes: 77
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const response = await api.get('/api/blogs');
+    const titles = response.body.map(b => b.title);
+
+    expect(response.body).toHaveLength(blogs.length + 1);
+    expect(titles).toContain('My new song');
   });
 });
 
