@@ -73,7 +73,7 @@ describe('Testing blog api' , () => {
     const response = await api.get('/api/blogs');
 
     expect(response.body).toHaveLength(blogs.length + 1);
-    expect(response.body.slice(-1).likes).toBe(0);
+    expect(response.body.slice(-1)[0].likes).toBe(0);
   });
 });
 
