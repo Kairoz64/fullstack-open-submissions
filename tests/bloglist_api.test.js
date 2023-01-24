@@ -48,7 +48,7 @@ describe('Fetching a specific blog', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(resultBlog).toEqual(blogToFetch);
+    expect(resultBlog.body).toEqual(blogToFetch);
   });
 
   test('which has a valid non-existing id returns 404', async () => {
