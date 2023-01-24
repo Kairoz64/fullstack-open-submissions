@@ -7,15 +7,16 @@ blogsRouter.get('/', async (req, res) => {
 });
 
 blogsRouter.get('/:id', async (req, res) => {
+  const id = req.params.id;
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(id);
     if (blog) {
       res.json(blog);
     } else {
       res.status(404).end();
     }
   } catch(e) {
-    res.status(400);
+    res.status(400).end();
   }
 });
 

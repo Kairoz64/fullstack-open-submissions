@@ -68,6 +68,13 @@ describe('Fetching a specific blog', () => {
       .get(`/api/blogs/${nonExistingId}`)
       .expect(404);
   });
+
+  test('which has an invalid id', async () => {
+    const id = 'panko';
+    await api
+      .get(`/api/blogs/${id}`)
+      .expect(400);
+  });
 });
 
 describe('Adding valid blogs', () => {
