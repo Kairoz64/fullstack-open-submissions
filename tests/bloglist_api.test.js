@@ -37,6 +37,39 @@ describe('Fetching blogs' , () => {
   });
 });
 
+describe('Fetching a specific blog', () => {
+  test('which has a valid existing id success', async () => {
+    let initialBlogs = await Blog.find({});
+    initialBlogs = initialBlogs.map(b => b.toJSON());
+    const blogToFetch = initialBlogs[0];
+
+    const resultBlog = await api
+      .get(`/api/blogs/${blogToFetch.id}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(resultBlog).toEqual(blogToFetch);
+  });
+
+  test('which has a valid non-existing id returns 404', async () => {
+    const removedBlog = new Blog({
+      title: 'Bye',
+      author: 'removedsoon',
+      url:'asd.com',
+      likes: 8
+    });
+
+    await removedBlog.save();
+    await removedBlog.remove();
+
+    const nonExistingId = removedBlog._id.toString();
+
+    await api
+      .get(`/api/blogs/${nonExistingId}`)
+      .expect(404);
+  });
+});
+
 describe('Adding valid blogs', () => {
   test('Checks if a valid blog can be added', async () => {
     const newBlog = {
@@ -110,6 +143,11 @@ describe('Adding invalid blogs', () => {
 
     const response = await api.get('/api/blogs');
     expect(response.body).toHaveLength(blogs.length);
+  });
+});
+
+describe('Deleteting blogs', () => {
+  test('Deleting an existing blog', () => {
   });
 });
 
