@@ -25,7 +25,7 @@ beforeEach(async () => {
   await Blog.insertMany(blogs);
 });
 
-describe('Testing blog api' , () => {
+describe('Fetching blogs' , () => {
   test('All blogs are fetched', async () => {
     const response = await api.get('/api/blogs');
     expect(response.body).toHaveLength(blogs.length);
@@ -35,7 +35,9 @@ describe('Testing blog api' , () => {
     const response = await api.get('/api/blogs');
     expect(response.body[0].id).toBeDefined();
   });
+});
 
+describe('Adding valid blogs', () => {
   test('Checks if a valid blog can be added', async () => {
     const newBlog = {
       title: 'My new song',
@@ -75,7 +77,9 @@ describe('Testing blog api' , () => {
     expect(response.body).toHaveLength(blogs.length + 1);
     expect(response.body.slice(-1)[0].likes).toBe(0);
   });
+});
 
+describe('Adding invalid blogs', () => {
   test('You can not add a blog missing a title', async () => {
     const newBlog = {
       author: 'Examplifly',
