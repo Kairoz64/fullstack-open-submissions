@@ -153,8 +153,24 @@ describe('Adding invalid blogs', () => {
   });
 });
 
-describe('Deleteting blogs', () => {
-  test('Deleting an existing blog', () => {
+describe('Deleting', () => {
+  test('an existing blog is successful', async () => {
+    let initialBlogs = await Blog.find({});
+    initialBlogs = initialBlogs.map(b => b.toJSON());
+    const blogToDelete = initialBlogs[0];
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204);
+
+    const blogsAtEnd = await api
+      .get('/api/blogs').body;
+
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1);
+
+    const deletedBlog = blogsAtEnd.find(b => b.id === blogToDelete);
+
+    expect(deletedBlog).toBeUndefined();
   });
 });
 
