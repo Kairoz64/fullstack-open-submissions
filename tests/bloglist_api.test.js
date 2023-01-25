@@ -174,6 +174,109 @@ describe('Deleting', () => {
   });
 });
 
+describe('Updating a blog', () => {
+  test('which exists using a valid object', async () => {
+    const updatedBlog = {
+      title: 'React patterns',
+      author: 'Chencho Perez',
+      url: 'https://reactpatterns.com/',
+      likes: 35
+    };
+
+    let initialBlogs = await Blog.find({});
+    initialBlogs = initialBlogs.map(b => b.toJSON());
+    const blogToUpdate = initialBlogs[0];
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200);
+
+    const blogsAtEnd = await api
+      .get('/api/blogs');
+
+    expect(blogsAtEnd.body.map(b => b.author)).toContain('Chencho Perez');
+  });
+
+  test('which exists using an object without author does not change anything', async () => {
+    const updatedBlog = {
+      title: 'React patterns',
+      url: 'https://reactpatterns.com/',
+      likes: 35
+    };
+
+    let initialBlogs = await Blog.find({});
+    initialBlogs = initialBlogs.map(b => b.toJSON());
+    const blogToUpdate = initialBlogs[0];
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(400);
+
+    const blogsAtEnd = await api
+      .get('/api/blogs');
+
+    expect(blogsAtEnd.body.map(b => b.author)).toContain('Michael Chan');
+  });
+
+  test('which exists using an object without title does not change anything', async () => {
+    const updatedBlog = {
+      author: 'Chencho Perez',
+      url: 'https://reactpatterns.com/',
+      likes: 35
+    };
+
+    let initialBlogs = await Blog.find({});
+    initialBlogs = initialBlogs.map(b => b.toJSON());
+    const blogToUpdate = initialBlogs[0];
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(400);
+
+    const blogsAtEnd = await api
+      .get('/api/blogs');
+
+    expect(blogsAtEnd.body.map(b => b.author)).toContain('Michael Chan');
+  });
+
+  test('which does not exist returns 404', async () => {
+    const updatedBlog = {
+      title: 'React patterns',
+      author: 'Chencho Perez',
+      url: 'https://reactpatterns.com/',
+      likes: 35
+    };
+
+    const removedBlog = new Blog({
+      title: 'Bye',
+      author: 'removedsoon',
+      url:'asd.com',
+      likes: 8
+    });
+
+    await removedBlog.save();
+    await removedBlog.remove();
+
+    const nonExistingId = removedBlog._id.toString();
+
+    let initialBlogs = await Blog.find({});
+    initialBlogs = initialBlogs.map(b => b.toJSON());
+
+    await api
+      .put(`/api/blogs/${nonExistingId.id}`)
+      .send(updatedBlog)
+      .expect(404);
+
+    const blogsAtEnd = await api
+      .get('/api/blogs');
+
+    expect(blogsAtEnd.body).toHaveLength(initialBlogs.length);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
