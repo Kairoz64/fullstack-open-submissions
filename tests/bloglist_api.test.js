@@ -164,11 +164,11 @@ describe('Deleting', () => {
       .expect(204);
 
     const blogsAtEnd = await api
-      .get('/api/blogs').body;
+      .get('/api/blogs');
 
-    expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1);
+    expect(blogsAtEnd.body).toHaveLength(initialBlogs.length - 1);
 
-    const deletedBlog = blogsAtEnd.find(b => b.id === blogToDelete);
+    const deletedBlog = blogsAtEnd.body.find(b => b.id === blogToDelete);
 
     expect(deletedBlog).toBeUndefined();
   });
