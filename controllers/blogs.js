@@ -45,4 +45,34 @@ blogsRouter.delete('/:id', async (req, res) => {
   }
 });
 
+blogsRouter.put('/:id', async (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+
+  if (!body.author || !body.title) {
+    return res.status(400).json({
+      error:  'content missing'
+    });
+  }
+
+  const blog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes
+  };
+
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
+    if (updatedBlog === null) {
+      return res.status(404).end();
+    }
+
+    res.json(updatedBlog);
+
+  } catch(e) {
+    res.status(400).end();
+  }
+});
+
 module.exports = blogsRouter;

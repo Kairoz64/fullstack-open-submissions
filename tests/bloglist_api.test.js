@@ -266,7 +266,7 @@ describe('Updating a blog', () => {
     initialBlogs = initialBlogs.map(b => b.toJSON());
 
     await api
-      .put(`/api/blogs/${nonExistingId.id}`)
+      .put(`/api/blogs/${nonExistingId}`)
       .send(updatedBlog)
       .expect(404);
 
