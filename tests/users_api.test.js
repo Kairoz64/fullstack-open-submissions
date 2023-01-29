@@ -34,16 +34,18 @@ describe('Adding invalid users', () => {
     let initialUsers = await User.find({});
     initialUsers = initialUsers.map(b => b.toJSON());
 
-    await api
+    const message = await api
       .post('/api/users')
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/);
+
+    expect(message.body.error).toBe('malformed user');
+
     const usersAtEnd = await api
       .get('/api/users');
 
     expect(usersAtEnd.body).toHaveLength(initialUsers.length);
-    expect(usersAtEnd.body.slice(-1)[0].error).toBe('malformed user');
   });
 
   test('when username is 1 character long', async () => {
@@ -56,16 +58,18 @@ describe('Adding invalid users', () => {
     let initialUsers = await User.find({});
     initialUsers = initialUsers.map(b => b.toJSON());
 
-    await api
+    const message = await api
       .post('/api/users')
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/);
+
+    expect(message.body.error).toBe('malformed user');
+
     const usersAtEnd = await api
       .get('/api/users');
 
     expect(usersAtEnd.body).toHaveLength(initialUsers.length);
-    expect(usersAtEnd.body.slice(-1)[0].error).toBe('malformed user');
   });
 
   test('when username is 2 characters long', async () => {
@@ -78,16 +82,18 @@ describe('Adding invalid users', () => {
     let initialUsers = await User.find({});
     initialUsers = initialUsers.map(b => b.toJSON());
 
-    await api
+    const message = await api
       .post('/api/users')
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/);
+
+    expect(message.body.error).toBe('malformed user');
+
     const usersAtEnd = await api
       .get('/api/users');
 
     expect(usersAtEnd.body).toHaveLength(initialUsers.length);
-    expect(usersAtEnd.body.slice(-1)[0].error).toBe('malformed user');
   });
 
   test('when password is 0 characters long', async () => {
@@ -100,21 +106,23 @@ describe('Adding invalid users', () => {
     let initialUsers = await User.find({});
     initialUsers = initialUsers.map(b => b.toJSON());
 
-    await api
+    const message = await api
       .post('/api/users')
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/);
+
+    expect(message.body.error).toBe('malformed user');
+
     const usersAtEnd = await api
       .get('/api/users');
 
     expect(usersAtEnd.body).toHaveLength(initialUsers.length);
-    expect(usersAtEnd.body.slice(-1)[0].error).toBe('malformed user');
   });
 
   test('when password is 1 character long', async () => {
     const user = {
-      username: 'hackerman',
+      username: 'hackerman1',
       name: 'Anonymous',
       password: 'a'
     };
@@ -122,21 +130,23 @@ describe('Adding invalid users', () => {
     let initialUsers = await User.find({});
     initialUsers = initialUsers.map(b => b.toJSON());
 
-    await api
+    const message = await api
       .post('/api/users')
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/);
+
+    expect(message.body.error).toBe('malformed user');
+
     const usersAtEnd = await api
       .get('/api/users');
 
     expect(usersAtEnd.body).toHaveLength(initialUsers.length);
-    expect(usersAtEnd.body.slice(-1)[0].error).toBe('malformed user');
   });
 
   test('when password is 2 characters long', async () => {
     const user = {
-      username: 'hackerman',
+      username: 'hackerman2',
       name: 'Anonymous',
       password: 'aa'
     };
@@ -144,16 +154,18 @@ describe('Adding invalid users', () => {
     let initialUsers = await User.find({});
     initialUsers = initialUsers.map(b => b.toJSON());
 
-    await api
+    const message = await api
       .post('/api/users')
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/);
+
+    expect(message.body.error).toBe('malformed user');
+
     const usersAtEnd = await api
       .get('/api/users');
 
     expect(usersAtEnd.body).toHaveLength(initialUsers.length);
-    expect(usersAtEnd.body.slice(-1)[0].error).toBe('malformed user');
   });
 
   test('when username is not unique', async () => {
@@ -166,16 +178,18 @@ describe('Adding invalid users', () => {
     let initialUsers = await User.find({});
     initialUsers = initialUsers.map(b => b.toJSON());
 
-    await api
+    const message = await api
       .post('/api/users')
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/);
+
+    expect(message.body.error).toBe('duplicate username');
+
     const usersAtEnd = await api
       .get('/api/users');
 
     expect(usersAtEnd.body).toHaveLength(initialUsers.length);
-    expect(usersAtEnd.body.slice(-1)[0].error).toBe('duplicate username');
   });
 });
 
