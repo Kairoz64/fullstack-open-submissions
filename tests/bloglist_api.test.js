@@ -4,6 +4,7 @@ const app = require('../app');
 
 const api = supertest(app);
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 const blogs = [
   {
@@ -20,9 +21,26 @@ const blogs = [
   }
 ];
 
+const testUser = {
+  username: 'test',
+  name: 'test',
+  password: '12345'
+};
+
+let token;
+
 beforeEach(async () => {
   await Blog.deleteMany({});
   await Blog.insertMany(blogs);
+  await User.deleteMany({});
+  await api
+    .post('/api/users')
+    .send(testUser);
+
+  const res = await api
+    .post('/api/login')
+    .send(testUser);
+  token = res.body.token;
 });
 
 describe('Fetching blogs' , () => {
@@ -88,6 +106,7 @@ describe('Adding valid blogs', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -108,6 +127,7 @@ describe('Adding valid blogs', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -129,6 +149,7 @@ describe('Adding invalid blogs', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400);
 
@@ -145,6 +166,7 @@ describe('Adding invalid blogs', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400);
 
@@ -155,12 +177,18 @@ describe('Adding invalid blogs', () => {
 
 describe('Deleting', () => {
   test('an existing blog is successful', async () => {
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'code', author: 'hackerman', url: 'kek.com', likes: 2 });
+    const blogToDelete = response.body;
+
     let initialBlogs = await Blog.find({});
     initialBlogs = initialBlogs.map(b => b.toJSON());
-    const blogToDelete = initialBlogs[0];
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204);
 
     const blogsAtEnd = await api
@@ -176,19 +204,23 @@ describe('Deleting', () => {
 
 describe('Updating a blog', () => {
   test('which exists using a valid object', async () => {
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'code', author: 'hackerman', url: 'kek.com', likes: 2 });
+
     const updatedBlog = {
-      title: 'React patterns',
+      title: 'code',
       author: 'Chencho Perez',
-      url: 'https://reactpatterns.com/',
-      likes: 35
+      url: 'kek.com',
+      likes: 2
     };
 
-    let initialBlogs = await Blog.find({});
-    initialBlogs = initialBlogs.map(b => b.toJSON());
-    const blogToUpdate = initialBlogs[0];
+    const blogToUpdate = response.body;
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(updatedBlog)
       .expect(200);
 
@@ -199,74 +231,84 @@ describe('Updating a blog', () => {
   });
 
   test('which exists using an object without author does not change anything', async () => {
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'code', author: 'hackerman', url: 'kek.com', likes: 2 });
+
     const updatedBlog = {
-      title: 'React patterns',
-      url: 'https://reactpatterns.com/',
-      likes: 35
+      title: 'code',
+      url: 'kek.com',
+      likes: 2
     };
 
-    let initialBlogs = await Blog.find({});
-    initialBlogs = initialBlogs.map(b => b.toJSON());
-    const blogToUpdate = initialBlogs[0];
+    const blogToUpdate = response.body;
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(updatedBlog)
       .expect(400);
 
     const blogsAtEnd = await api
       .get('/api/blogs');
 
-    expect(blogsAtEnd.body.map(b => b.author)).toContain('Michael Chan');
+    expect(blogsAtEnd.body.map(b => b.author)).toContain('hackerman');
   });
 
   test('which exists using an object without title does not change anything', async () => {
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'code', author: 'hackerman', url: 'kek.com', likes: 2 });
+
     const updatedBlog = {
-      author: 'Chencho Perez',
-      url: 'https://reactpatterns.com/',
-      likes: 35
+      author: 'hackerman',
+      url: 'kek.com',
+      likes: 2
     };
 
-    let initialBlogs = await Blog.find({});
-    initialBlogs = initialBlogs.map(b => b.toJSON());
-    const blogToUpdate = initialBlogs[0];
+    const blogToUpdate = response.body;
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(updatedBlog)
       .expect(400);
 
     const blogsAtEnd = await api
       .get('/api/blogs');
 
-    expect(blogsAtEnd.body.map(b => b.author)).toContain('Michael Chan');
+    expect(blogsAtEnd.body.map(b => b.title)).toContain('code');
   });
 
   test('which does not exist returns 404', async () => {
     const updatedBlog = {
-      title: 'React patterns',
+      title: 'code',
       author: 'Chencho Perez',
-      url: 'https://reactpatterns.com/',
-      likes: 35
+      url: 'kek.com',
+      likes: 2
     };
 
-    const removedBlog = new Blog({
-      title: 'Bye',
-      author: 'removedsoon',
-      url:'asd.com',
-      likes: 8
-    });
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'removedsoon', author: 'hackerman', url: 'kek.com', likes: 2 });
 
-    await removedBlog.save();
-    await removedBlog.remove();
+    const removedBlog = response.body;
 
-    const nonExistingId = removedBlog._id.toString();
+    await api
+      .delete(`/api/blogs/${removedBlog.id}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    const nonExistingId = removedBlog.id.toString();
 
     let initialBlogs = await Blog.find({});
     initialBlogs = initialBlogs.map(b => b.toJSON());
 
     await api
       .put(`/api/blogs/${nonExistingId}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(updatedBlog)
       .expect(404);
 
@@ -274,6 +316,22 @@ describe('Updating a blog', () => {
       .get('/api/blogs');
 
     expect(blogsAtEnd.body).toHaveLength(initialBlogs.length);
+  });
+});
+
+describe('If not authenticated', () => {
+  test('trying to add a blog returns 401', async () => {
+    const newBlog = {
+      name: 'Final Destination',
+      author: '1v1 no items only Fox',
+      url: '202X.com',
+      likes: 32
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401);
   });
 });
 
