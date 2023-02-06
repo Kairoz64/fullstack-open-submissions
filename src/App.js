@@ -36,7 +36,7 @@ const Login = ({
   );
 }
 
-const Blogs = ({blogs}) => {
+const Blogs = ({blogs, user}) => {
   return(
     <>
       <h2>blogs</h2>
@@ -59,6 +59,15 @@ const App = () => {
     )  
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedUser');
+
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+    }
+  }, [])
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -66,12 +75,22 @@ const App = () => {
       const user = await loginService.login({
         username, password
       });
+
+      window.localStorage.setItem(
+        'loggedUser', JSON.stringify(user)
+      );
+
       setUser(user);
       setUsername('');
       setPassword('');
     } catch (e) {
       console.log('Wrong credentials')
     }
+  }
+
+  const handleLogout = (e) => {
+    window.localStorage.removeItem('loggedUser');
+    setUser(null);
   }
 
   return (
@@ -84,6 +103,8 @@ const App = () => {
           handlePasswordChange={({target}) => {setPassword(target.value)}}
           handleSubmit={handleLogin}
       />}
+      {user !== null && <div>{user.username} logged in 
+        <button onClick={handleLogout}>logout</button></div>}
       {user !== null && <Blogs blogs={blogs}/>}
     </div>
   )
