@@ -3,6 +3,47 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+const BlogForm = ({
+    title, handleTitleChange,
+    author, handleAuthorChange,
+    url, handleUrlChange,
+    handleSubmit 
+  }) => {
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Create new</h2>
+      <div>
+        title:
+        <input 
+          type="text" 
+          value={title} 
+          name="Title" 
+          onChange={handleTitleChange}
+        />
+      </div>
+      <div>
+        author:
+        <input 
+          type="text" 
+          value={author} 
+          name="Author" 
+          onChange={handleAuthorChange}
+        />
+      </div>
+      <div>
+        url:
+        <input 
+          type="text" 
+          value={url}
+          name="Url" 
+          onChange={handleUrlChange}
+        />
+      </div>
+      <button type="submit">create</button>
+    </form>
+  );
+}
+
 const Login = ({
     username,
     password,
@@ -52,6 +93,9 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -65,6 +109,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
+      blogService.setToken(user.token);
     }
   }, [])
 
@@ -80,6 +125,7 @@ const App = () => {
         'loggedUser', JSON.stringify(user)
       );
 
+      blogService.setToken(user.token);
       setUser(user);
       setUsername('');
       setPassword('');
@@ -91,6 +137,22 @@ const App = () => {
   const handleLogout = (e) => {
     window.localStorage.removeItem('loggedUser');
     setUser(null);
+    blogService.setToken(null);
+  }
+
+  const handleCreateBlog = async (e) => {
+    e.preventDefault();
+    try {
+      const newBlog = await blogService.create({
+        title, author, url
+      });
+      setTitle('');
+      setAuthor('');
+      setUrl('');
+      setBlogs([...blogs, newBlog]);
+    } catch(e) {
+      console.log('error creating blog');
+    }
   }
 
   return (
@@ -105,6 +167,12 @@ const App = () => {
       />}
       {user !== null && <div>{user.username} logged in 
         <button onClick={handleLogout}>logout</button></div>}
+      {user !== null && <BlogForm 
+        title={title} handleTitleChange={({target}) => {setTitle(target.value)}}
+        author={author} handleAuthorChange={({target}) => {setAuthor(target.value)}}
+        url={url} handleUrlChange={({target}) => {setUrl(target.value)}}
+        handleSubmit={handleCreateBlog}
+      />}
       {user !== null && <Blogs blogs={blogs}/>}
     </div>
   )
