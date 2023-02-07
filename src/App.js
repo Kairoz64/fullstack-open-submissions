@@ -1,92 +1,9 @@
 import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import Blogs from './components/Blogs'
+import BlogForm from './components/BlogForm'
+import Login from './components/Login'
 import blogService from './services/blogs'
 import loginService from './services/login'
-
-const BlogForm = ({
-    title, handleTitleChange,
-    author, handleAuthorChange,
-    url, handleUrlChange,
-    handleSubmit 
-  }) => {
-  return (
-    <form onSubmit={handleSubmit}>
-      <h2>Create new</h2>
-      <div>
-        title:
-        <input 
-          type="text" 
-          value={title} 
-          name="Title" 
-          onChange={handleTitleChange}
-        />
-      </div>
-      <div>
-        author:
-        <input 
-          type="text" 
-          value={author} 
-          name="Author" 
-          onChange={handleAuthorChange}
-        />
-      </div>
-      <div>
-        url:
-        <input 
-          type="text" 
-          value={url}
-          name="Url" 
-          onChange={handleUrlChange}
-        />
-      </div>
-      <button type="submit">create</button>
-    </form>
-  );
-}
-
-const Login = ({
-    username,
-    password,
-    handleUsernameChange,
-    handlePasswordChange,
-    handleSubmit
-  }) => {
-  return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={handleUsernameChange}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={handlePasswordChange}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  );
-}
-
-const Blogs = ({blogs, user}) => {
-  return(
-    <>
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
-    </>
-  );
-}
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -155,27 +72,34 @@ const App = () => {
     }
   }
 
-  return (
-    <div>
-      {user === null && 
+  if (user === null) {
+    return (
+      <div>
         <Login 
           username={username}
           password={password}
           handleUsernameChange={({target}) => {setUsername(target.value)}}
           handlePasswordChange={({target}) => {setPassword(target.value)}}
           handleSubmit={handleLogin}
-      />}
-      {user !== null && <div>{user.username} logged in 
-        <button onClick={handleLogout}>logout</button></div>}
-      {user !== null && <BlogForm 
-        title={title} handleTitleChange={({target}) => {setTitle(target.value)}}
-        author={author} handleAuthorChange={({target}) => {setAuthor(target.value)}}
-        url={url} handleUrlChange={({target}) => {setUrl(target.value)}}
-        handleSubmit={handleCreateBlog}
-      />}
-      {user !== null && <Blogs blogs={blogs}/>}
-    </div>
-  )
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <div>{user.username} logged in 
+          <button onClick={handleLogout}>logout</button>
+        </div>
+        <BlogForm 
+          title={title} handleTitleChange={({target}) => {setTitle(target.value)}}
+          author={author} handleAuthorChange={({target}) => {setAuthor(target.value)}}
+          url={url} handleUrlChange={({target}) => {setUrl(target.value)}}
+          handleSubmit={handleCreateBlog}
+        />
+        <Blogs blogs={blogs} />
+      </div>
+    );
+  }
 }
 
 export default App
