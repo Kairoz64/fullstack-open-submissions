@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
 import Login from './components/Login';
+import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import './index.css';
 
 const App = () => {
 	const [blogs, setBlogs] = useState([]);
@@ -13,6 +15,8 @@ const App = () => {
 	const [title, setTitle] = useState('');
 	const [author, setAuthor] = useState('');
 	const [url, setUrl] = useState('');
+	const [message, setMessage] = useState(null);
+	const [isError, setIsError] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -32,6 +36,11 @@ const App = () => {
 		}
 	}, []);
 
+	const clearNotification = () => {
+		setMessage(null);
+		setIsError(false);
+	};
+
 	const handleLogin = async (e) => {
 		e.preventDefault();
 
@@ -49,7 +58,9 @@ const App = () => {
 			setUsername('');
 			setPassword('');
 		} catch (e) {
-			console.log('Wrong credentials');
+			setIsError(true);
+			setMessage('Wrong credentials');
+			setTimeout(() => clearNotification(), 5000);
 		}
 	};
 
@@ -57,6 +68,8 @@ const App = () => {
 		window.localStorage.removeItem('loggedUser');
 		setUser(null);
 		blogService.setToken(null);
+		setMessage('Log out successfully');
+		setTimeout(() => clearNotification(), 5000);
 	};
 
 	const handleCreateBlog = async (e) => {
@@ -69,14 +82,19 @@ const App = () => {
 			setAuthor('');
 			setUrl('');
 			setBlogs([...blogs, newBlog]);
+			setMessage(`Added a new blog ${newBlog.title} by ${newBlog.author}`);
+			setTimeout(() => clearNotification(), 5000);
 		} catch(e) {
-			console.log('error creating blog');
+			setIsError(true);
+			setMessage('Error creating a blog');
+			setTimeout(() => clearNotification(), 5000);
 		}
 	};
 
 	if (user === null) {
 		return (
 			<div>
+				{message && <Notification message={message} error={isError}/>}
 				<Login
 					username={username}
 					password={password}
@@ -89,6 +107,7 @@ const App = () => {
 	} else {
 		return (
 			<div>
+				{message && <Notification message={message} error={isError}/>}
 				<div>{user.username} logged in
 					<button onClick={handleLogout}>logout</button>
 				</div>
