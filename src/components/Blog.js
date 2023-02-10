@@ -8,6 +8,10 @@ const Blog = ({ blog }) => {
 		setVisible(!visible);
 	};
 
+	const addHttp = (url) => {
+		return url.startsWith('http') ? url : 'https://' + url;
+	};
+
 	return (
 		<div className='blog-container'>
 			<div>
@@ -15,7 +19,7 @@ const Blog = ({ blog }) => {
 				<button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
 			</div>
 			<div style={shownWhenVisible}>
-				<div>{blog.url}</div>
+				<a href={addHttp(blog.url)}>{addHttp(blog.url)}</a>
 				<div>
 					likes {blog.likes}
 					<button>like</button>
