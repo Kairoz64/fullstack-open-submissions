@@ -112,6 +112,19 @@ const App = () => {
 		}
 	};
 
+	const removeBlog = async (id) => {
+		try {
+			await blogService.remove(id);
+			setBlogsSortedByLikes(blogs.filter(b => b.id !== id));
+			setMessage('Blog removed successfully');
+			setTimeout(() => clearNotification(), 5000);
+		} catch (e) {
+			setIsError(true);
+			setMessage('Error removing blog');
+			setTimeout(() => clearNotification(), 5000);
+		}
+	};
+
 	if (user === null) {
 		return (
 			<div>
@@ -135,7 +148,11 @@ const App = () => {
 				<Toggleable buttonLabel='new blog' ref={blogFormRef}>
 					<BlogForm createBlog={addBlog} />
 				</Toggleable>
-				<Blogs blogs={blogs} updateBlog={updateBlog} />
+				<Blogs blogs={blogs}
+					user={user}
+					updateBlog={updateBlog}
+					removeBlog={removeBlog}
+				/>
 			</div>
 		);
 	}
