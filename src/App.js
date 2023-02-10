@@ -88,6 +88,22 @@ const App = () => {
 		}
 	};
 
+	const updateBlog = async (id, blogObject) => {
+		try {
+			const updatedBlog = await blogService.update(id, blogObject);
+			updatedBlog.user = {
+				id: updatedBlog.user,
+				name: user.name,
+				username: user.username
+			};
+			setBlogs(blogs.map(b => b.id !== updatedBlog.id ? b : updatedBlog));
+		} catch(e) {
+			setIsError(true);
+			setMessage('Error updating blog');
+			setTimeout(() => clearNotification(), 5000);
+		}
+	};
+
 	if (user === null) {
 		return (
 			<div>
@@ -111,7 +127,7 @@ const App = () => {
 				<Toggleable buttonLabel='new blog'>
 					<BlogForm createBlog={addBlog} />
 				</Toggleable>
-				<Blogs blogs={blogs} />
+				<Blogs blogs={blogs} updateBlog={updateBlog} />
 			</div>
 		);
 	}
