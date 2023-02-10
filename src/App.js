@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
 import Login from './components/Login';
@@ -15,6 +15,8 @@ const App = () => {
 	const [user, setUser] = useState(null);
 	const [message, setMessage] = useState(null);
 	const [isError, setIsError] = useState(false);
+
+	const blogFormRef = useRef();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -72,6 +74,7 @@ const App = () => {
 
 	const addBlog = async (blogObject) => {
 		try {
+			blogFormRef.current.toggleVisibility();
 			const newBlog = await blogService.create(blogObject);
 			newBlog.user = {
 				id: newBlog.user,
@@ -124,7 +127,7 @@ const App = () => {
 				<div>{user.username} logged in
 					<button onClick={handleLogout}>logout</button>
 				</div>
-				<Toggleable buttonLabel='new blog'>
+				<Toggleable buttonLabel='new blog' ref={blogFormRef}>
 					<BlogForm createBlog={addBlog} />
 				</Toggleable>
 				<Blogs blogs={blogs} updateBlog={updateBlog} />
