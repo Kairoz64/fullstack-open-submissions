@@ -73,6 +73,11 @@ const App = () => {
 	const addBlog = async (blogObject) => {
 		try {
 			const newBlog = await blogService.create(blogObject);
+			newBlog.user = {
+				id: newBlog.user,
+				name: user.name,
+				username: user.username
+			};
 			setBlogs([...blogs, newBlog]);
 			setMessage(`Added a new blog ${newBlog.title} by ${newBlog.author}`);
 			setTimeout(() => clearNotification(), 5000);
