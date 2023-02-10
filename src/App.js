@@ -21,7 +21,7 @@ const App = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const blogs = await blogService.getAll();
-			setBlogs(blogs);
+			setBlogsSortedByLikes(blogs);
 		};
 		fetchData();
 	}, []);
@@ -35,6 +35,11 @@ const App = () => {
 			blogService.setToken(user.token);
 		}
 	}, []);
+
+	const setBlogsSortedByLikes = (blogs) => {
+		const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+		setBlogs(sortedBlogs);
+	};
 
 	const clearNotification = () => {
 		setMessage(null);
@@ -81,7 +86,7 @@ const App = () => {
 				name: user.name,
 				username: user.username
 			};
-			setBlogs([...blogs, newBlog]);
+			setBlogsSortedByLikes([...blogs, newBlog]);
 			setMessage(`Added a new blog ${newBlog.title} by ${newBlog.author}`);
 			setTimeout(() => clearNotification(), 5000);
 		} catch(e) {
@@ -99,7 +104,7 @@ const App = () => {
 				name: user.name,
 				username: user.username
 			};
-			setBlogs(blogs.map(b => b.id !== updatedBlog.id ? b : updatedBlog));
+			setBlogsSortedByLikes(blogs.map(b => b.id !== updatedBlog.id ? b : updatedBlog));
 		} catch(e) {
 			setIsError(true);
 			setMessage('Error updating blog');
