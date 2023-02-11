@@ -27,11 +27,11 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
 
 	return (
 		<div className='blog-container'>
-			<div>
+			<div className='blog-info'>
 				{blog.title} {blog.author}
 				<button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
 			</div>
-			<div style={shownWhenVisible}>
+			<div style={shownWhenVisible} className='blog-details'>
 				<a href={addHttp(blog.url)}>{addHttp(blog.url)}</a>
 				<div>
 					likes {blog.likes}
