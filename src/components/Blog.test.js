@@ -1,27 +1,43 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog';
 
-test('renders blogs title and author, does not show url and likes', () => {
-	const user = {
-		username: 'wakanko',
-		name: 'Chencho Perez',
-		id: '0001'
-	};
+describe('<Blog />', () => {
+	let container;
+	let blog;
 
-	const blog = {
-		title: 'placeholder blog',
-		author: 'test',
-		url: 'example.com',
-		user
-	};
+	beforeEach(() => {
+		blog = {
+			title: 'placeholder blog',
+			author: 'test',
+			url: 'example.com',
+			user: {
+				username: 'wakanko',
+				name: 'Chencho Perez',
+				id: '0001'
+			}
+		};
+		container = render(<Blog blog={blog} user={blog.user} />).container;
+	});
 
-	const { container } = render(<Blog blog={blog} user={user} />);
-	const blogInfo = container.querySelector('.blog-info');
-	const blogDetails = container.querySelector('.blog-details');
-	expect(blogInfo).toHaveTextContent(
-		`${blog.title} ${blog.author}`
-	);
-	expect(blogDetails).toHaveStyle('display: none');
+	test('renders blogs title and author, does not show url and likes', () => {
+
+		const blogInfo = container.querySelector('.blog-info');
+		const blogDetails = container.querySelector('.blog-details');
+		expect(blogInfo).toHaveTextContent(
+			`${blog.title} ${blog.author}`
+		);
+		expect(blogDetails).toHaveStyle('display: none');
+	});
+
+	test('url and likes are shown when you press view button', async () => {
+		const user = userEvent.setup();
+		const button = screen.getByText('view');
+		await user.click(button);
+
+		const blogDetails = container.querySelector('.blog-details');
+		expect(blogDetails).not.toHaveStyle('display: none');
+	});
 });
