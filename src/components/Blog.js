@@ -35,7 +35,7 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
 				<a href={addHttp(blog.url)}>{addHttp(blog.url)}</a>
 				<div>
 					likes {blog.likes}
-					<button onClick={() => increaseLikes(blog)}>like</button>
+					<button className='like-button' onClick={() => increaseLikes(blog)}>like</button>
 				</div>
 				<div>{blog.user.name}</div>
 				{user.username === blog.user.username && <div>
