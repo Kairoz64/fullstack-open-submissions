@@ -20,7 +20,10 @@ const users = [
 
 beforeEach(async () => {
   await User.deleteMany({});
-  await User.insertMany(users);
+  await api.post('/api/users')
+    .send(users[0]);
+  await api.post('/api/users')
+    .send(users[1]);
 });
 
 describe('Adding invalid users', () => {
