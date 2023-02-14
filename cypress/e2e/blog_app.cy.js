@@ -87,6 +87,12 @@ describe('Blog app', function() {
 				cy.contains('remove').click();
 				cy.contains('Blog removed successfully');
 			});
+
+			it('user can not see remove button in other blogs', function() {
+				cy.contains('blog3')
+					.contains('view').click();
+				cy.should('not.contain', 'remove');
+			});
 		});
 	});
 });
