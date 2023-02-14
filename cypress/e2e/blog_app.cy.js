@@ -72,7 +72,13 @@ describe('Blog app', function() {
 				cy.createBlog({ title:'blog3', author: 'haxx0r', url: 'example.com' });
 				cy.logout();
 				cy.login({ username:'cat0', password:'meow' });
-				cy.visit('');
+			});
+
+			it('user can like a blog', function() {
+				cy.contains('blog1')
+					.contains('view').click();
+				cy.contains('like').click();
+				cy.get('.number-likes').contains('1');
 			});
 		});
 	});

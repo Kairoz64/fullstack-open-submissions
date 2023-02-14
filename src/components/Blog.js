@@ -33,7 +33,7 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
 			</div>
 			<div style={shownWhenVisible} className='blog-details'>
 				<a href={addHttp(blog.url)}>{addHttp(blog.url)}</a>
-				<div>
+				<div className='number-likes'>
 					likes {blog.likes}
 					<button className='like-button' onClick={() => increaseLikes(blog)}>like</button>
 				</div>
