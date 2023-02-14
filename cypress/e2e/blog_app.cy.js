@@ -1,14 +1,14 @@
 describe('Blog app', function() {
 	beforeEach(function() {
-		cy.request('POST', 'http://localhost:3003/api/testing/reset');
+		cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`);
 		const user = {
 			username: 'cat0',
 			name: 'Chencho Perez',
 			password: 'meow'
 		};
 
-		cy.request('POST', 'http://localhost:3003/api/users/', user);
-		cy.visit('http://localhost:3000');
+		cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user);
+		cy.visit('');
 	});
 
 	it('Login form is shown', function() {
@@ -41,11 +41,11 @@ describe('Blog app', function() {
 
 	describe('When logged in', function() {
 		beforeEach(function() {
-			cy.request('POST', 'http://localhost:3003/api/login/',
+			cy.request('POST', `${Cypress.env('BACKEND')}/login/`,
 				{ username:'cat0', password:'meow' }
 			).then(res => {
 				localStorage.setItem('loggedUser', JSON.stringify(res.body));
-				cy.visit('http://localhost:3000');
+				cy.visit('');
 			});
 		});
 
