@@ -72,6 +72,8 @@ describe('Blog app', function() {
 				cy.createBlog({ title:'blog3', author: 'haxx0r', url: 'example.com' });
 				cy.logout();
 				cy.login({ username:'cat0', password:'meow' });
+				cy.createBlog({ title:'blog4', author: 'fastcat', url: 'example.com' });
+				cy.visit('');
 			});
 
 			it('user can like a blog', function() {
@@ -92,6 +94,57 @@ describe('Blog app', function() {
 				cy.contains('blog3')
 					.contains('view').click();
 				cy.should('not.contain', 'remove');
+			});
+
+			describe('blogs have likes', function() {
+				beforeEach(function() {
+					cy.contains('blog1')
+						.contains('view').click();
+					cy.wait(150);
+
+					for (let i = 0; i<1; i++) {
+						cy.contains('blog1')
+							.parent()
+							.contains('like')
+							.click({ force: true });
+						cy.wait(150);
+					}
+
+					cy.contains('blog2')
+						.contains('view').click();
+					cy.wait(150);
+
+					for (let i = 0; i<3; i++) {
+						cy.contains('blog2')
+							.parent()
+							.contains('like')
+							.click({ force: true });
+						cy.wait(150);
+					}
+
+					cy.contains('blog3')
+						.contains('view').click();
+					cy.wait(150);
+
+					cy.contains('blog4')
+						.contains('view').click();
+					cy.wait(150);
+
+					for (let i = 0; i<2; i++) {
+						cy.contains('blog4')
+							.parent()
+							.contains('like')
+							.click({ force: true });
+						cy.wait(150);
+					}
+				});
+
+				it('blogs are ordered by number of likes', function() {
+					cy.get('.blog-container').eq(0).should('contain', 'blog2');
+					cy.get('.blog-container').eq(1).should('contain', 'blog4');
+					cy.get('.blog-container').eq(2).should('contain', 'blog1');
+					cy.get('.blog-container').eq(3).should('contain', 'blog3');
+				});
 			});
 		});
 	});
