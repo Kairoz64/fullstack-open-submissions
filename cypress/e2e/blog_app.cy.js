@@ -1,13 +1,20 @@
 describe('Blog app', function() {
 	beforeEach(function() {
 		cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`);
-		const user = {
+		const user1 = {
 			username: 'cat0',
 			name: 'Chencho Perez',
 			password: 'meow'
 		};
 
-		cy.request('POST', `${Cypress.env('BACKEND')}/users/`, user);
+		const user2 = {
+			username: 'hackerman',
+			name: 'Anon',
+			password: '123'
+		};
+
+		cy.createUser(user1);
+		cy.createUser(user2);
 		cy.visit('');
 	});
 
@@ -39,14 +46,9 @@ describe('Blog app', function() {
 		});
 	});
 
-	describe('When logged in', function() {
+	describe('when logged in', function() {
 		beforeEach(function() {
-			cy.request('POST', `${Cypress.env('BACKEND')}/login/`,
-				{ username:'cat0', password:'meow' }
-			).then(res => {
-				localStorage.setItem('loggedUser', JSON.stringify(res.body));
-				cy.visit('');
-			});
+			cy.login({ username:'cat0', password:'meow' });
 		});
 
 		it('A blog can be created', function() {
@@ -59,6 +61,19 @@ describe('Blog app', function() {
 				.type('example.com');
 			cy.get('#submit-newBlog').click();
 			cy.contains('Wakanko');
+		});
+
+		describe('and some blogs exist', function() {
+			beforeEach(function() {
+				cy.createBlog({ title:'blog1', author: 'fastcat', url: 'example.com' });
+				cy.createBlog({ title:'blog2', author: 'fastcat', url: 'example.com' });
+				cy.logout();
+				cy.login({ username: 'hackerman', password: '123' });
+				cy.createBlog({ title:'blog3', author: 'haxx0r', url: 'example.com' });
+				cy.logout();
+				cy.login({ username:'cat0', password:'meow' });
+				cy.visit('');
+			});
 		});
 	});
 });
