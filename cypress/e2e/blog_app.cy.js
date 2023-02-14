@@ -80,6 +80,13 @@ describe('Blog app', function() {
 				cy.contains('like').click();
 				cy.get('.number-likes').contains('1');
 			});
+
+			it('user can delete their own blogs', function() {
+				cy.contains('blog1')
+					.contains('view').click();
+				cy.contains('remove').click();
+				cy.contains('Blog removed successfully');
+			});
 		});
 	});
 });
