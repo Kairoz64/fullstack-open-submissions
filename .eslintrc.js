@@ -3,8 +3,7 @@ module.exports = {
 		'browser': true,
 		'es2021': true,
 		'node': true,
-		'jest/globals': true ,
-		"cypress/globals": true
+		'jest/globals': true
 	},
 	'extends': [
 		'eslint:recommended',
@@ -18,13 +17,13 @@ module.exports = {
 	},
 	'plugins': [
 		'react',
-		'jest',
-		'cypress'
+		'jest'
 	],
 	'rules': {
 		'indent': [
 			'error',
-			'tab'
+			'tab',
+			{ 'SwitchCase': 1 }
 		],
 		'linebreak-style': [
 			'error',
