@@ -10,7 +10,6 @@ const AnecdoteForm = () => {
 		e.preventDefault();
 		dispatch(createAnecdote(newAnecdote));
 		setNewAnecdote('');
-		//sortAnecdotes();
 	};
 
 	return (
