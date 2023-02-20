@@ -34,15 +34,9 @@ const reducer = (state = initialState, action) => {
 
 			return state.map(a => a.id !== id ? a : changedAnecdote);
 		}
-		case 'SORT_ANECDOTES_BY_VOTES':
-			return [...state].sort((a, b) => b.votes - a.votes);
 		default:
 			return state;
 	}
-};
-
-export const sortByVotes = () => {
-	return { type: 'SORT_ANECDOTES_BY_VOTES' };
 };
 
 export const incrementVoteOf = (id) => {

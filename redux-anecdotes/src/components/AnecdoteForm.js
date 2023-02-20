@@ -1,20 +1,16 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createAnecdote, sortByVotes } from '../reducers/anecdoteReducer';
+import { createAnecdote } from '../reducers/anecdoteReducer';
 
 const AnecdoteForm = () => {
 	const dispatch = useDispatch();
 	const [newAnecdote, setNewAnecdote] = useState('');
 
-	const sortAnecdotes = () => {
-		dispatch(sortByVotes());
-	};
-
 	const addAnecdote = (e) => {
 		e.preventDefault();
 		dispatch(createAnecdote(newAnecdote));
 		setNewAnecdote('');
-		sortAnecdotes();
+		//sortAnecdotes();
 	};
 
 	return (
