@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import getRandomId from './utils/getRandomId';
 
@@ -7,8 +7,17 @@ const App = () => {
 	const dispatch = useDispatch();
 	const [newAnecdote, setNewAnecdote] = useState('');
 
+	useEffect(() => {
+		sortByVotes();
+	}, []);
+
 	const vote = (id) => {
 		dispatch({ type: 'VOTE', payload: { id } });
+		sortByVotes();
+	};
+
+	const sortByVotes = () => {
+		dispatch({ type: 'SORT_ANECDOTES_BY_VOTES' });
 	};
 
 	const addAnecdote = (e) => {
@@ -22,6 +31,7 @@ const App = () => {
 			}
 		});
 		setNewAnecdote('');
+		sortByVotes();
 	};
 
 	return (
