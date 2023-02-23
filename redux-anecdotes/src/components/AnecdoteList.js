@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { initializeAnecdotes, incrementVoteOf } from '../reducers/anecdoteReducer';
+import { initializeAnecdotes, incrementVote } from '../reducers/anecdoteReducer';
 import { setNotification, removeNotification } from '../reducers/notificationReducer';
 
 const AnecdoteList = () => {
@@ -15,7 +15,7 @@ const AnecdoteList = () => {
 	}, []);
 
 	const vote = (anecdote) => {
-		dispatch(incrementVoteOf(anecdote.id));
+		dispatch(incrementVote(anecdote));
 		dispatch(setNotification(`you voted '${anecdote.content}'`));
 		setTimeout(() => {
 			dispatch(removeNotification());

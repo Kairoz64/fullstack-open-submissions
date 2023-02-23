@@ -42,4 +42,14 @@ export const createAnecdote = (content) => {
 	};
 };
 
+export const incrementVote = (anecdote) => {
+	return async dispatch => {
+		const updatedAnecdote = await anecdoteService.update(anecdote.id, {
+			...anecdote,
+			votes: anecdote.votes + 1
+		});
+		dispatch(incrementVoteOf(updatedAnecdote.id));
+	};
+};
+
 export default anecdoteSlice.reducer;
