@@ -5,7 +5,7 @@ const Notification = () => {
 		borderWidth: 1,
 		marginBottom: 5
 	};
-	if (true) return null;
+	//if (true) return null;
 
 	return (
 		<div style={style}>
