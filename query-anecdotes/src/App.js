@@ -1,9 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { getAnecdotes, updateAnecdote } from './services/anecdotes';
+import { usePutNotification } from './NotificationContext';
 import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
 
 const App = () => {
+	const putNotification = usePutNotification();
 	const queryClient = useQueryClient();
 	const result = useQuery('anecdotes', getAnecdotes);
 	const updateAnecdoteMutation = useMutation(updateAnecdote, {
@@ -20,6 +22,7 @@ const App = () => {
 			...anecdote,
 			votes: anecdote.votes + 1
 		});
+		putNotification(`anecdote '${anecdote.content}' voted`, 5);
 	};
 
 	if (result.isLoading) {
