@@ -4,11 +4,11 @@ import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
 
 const App = () => {
+	const result = useQuery('anecdotes', getAnecdotes);
+
 	const handleVote = () => {
 		console.log('vote');
 	};
-
-	const result = useQuery('anecdotes', getAnecdotes);
 
 	if (result.isLoading) {
 		return <div>Loading data...</div>;
