@@ -9,10 +9,10 @@ const BlogForm = ({ toggle }) => {
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
-  const addBlog = (e) => {
+  const addBlog = async (e) => {
     e.preventDefault();
     try {
-      dispatch(createBlog({ title, author, url }));
+      await dispatch(createBlog({ title, author, url }));
       dispatch(setNotification(`Added a new blog ${title} by ${author}`, 5));
       toggle();
     } catch (e) {

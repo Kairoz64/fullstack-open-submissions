@@ -51,34 +51,6 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
   };
 
-  //blogFormRef.current.toggleVisibility();
-
-  /*  const updateBlog = async (id, blogObject) => {
-    try {
-      const updatedBlog = await blogService.update(id, blogObject);
-      updatedBlog.user = {
-        id: updatedBlog.user,
-        name: user.name,
-        username: user.username
-      };
-      setBlogsSortedByLikes(
-        blogs.map((b) => (b.id !== updatedBlog.id ? b : updatedBlog))
-      );
-    } catch (e) {
-      dispatch(setNotification('Error updating blog', 5, true));
-    }
-  };*/
-
-  /*  const removeBlog = async (id) => {
-    try {
-      await blogService.remove(id);
-      setBlogsSortedByLikes(blogs.filter((b) => b.id !== id));
-      dispatch(setNotification('Blog removed successfully', 5));
-    } catch (e) {
-      dispatch(setNotification('Error removing blog', 5, true));
-    }
-  };*/
-
   const renderLogin = () => {
     return (
       <div>

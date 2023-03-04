@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { incrementLike, deleteBlog } from '../reducers/blogReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
-const Blog = ({ blog, user, updateBlog, removeBlog }) => {
+const Blog = ({ blog, user }) => {
+  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const shownWhenVisible = { display: visible ? '' : 'none' };
 
@@ -13,15 +17,21 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
   };
 
   const increaseLikes = async (blog) => {
-    await updateBlog(blog.id, {
-      ...blog,
-      likes: blog.likes + 1
-    });
+    try {
+      await dispatch(incrementLike(blog));
+    } catch (e) {
+      dispatch(setNotification('Error updating blog', 5, true));
+    }
   };
 
-  const deleteBlog = async (id) => {
+  const removeBlog = async (blog) => {
     if (window.confirm(`Remove blog '${blog.title}' by ${blog.author}?`)) {
-      await removeBlog(id);
+      try {
+        await dispatch(deleteBlog(blog.id));
+        dispatch(setNotification('Blog removed successfully', 5));
+      } catch (e) {
+        dispatch(setNotification('Error removing blog', 5, true));
+      }
     }
   };
 
@@ -42,7 +52,7 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
         <div>{blog.user.name}</div>
         {user.username === blog.user.username && (
           <div>
-            <button onClick={() => deleteBlog(blog.id)}>remove</button>
+            <button onClick={() => removeBlog(blog)}>remove</button>
           </div>
         )}
       </div>
