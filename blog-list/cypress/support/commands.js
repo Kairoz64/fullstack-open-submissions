@@ -25,31 +25,31 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('createUser', ({ username, name, password }) => {
-	cy.request('POST', `${Cypress.env('BACKEND')}/users`, {
-		username, name, password
-	});
+  cy.request('POST', `${Cypress.env('BACKEND')}/users`, {
+    username, name, password
+  });
 });
 
 Cypress.Commands.add('login', ({ username, password }) => {
-	cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
-		username, password
-	}).then(({ body }) => {
-		localStorage.setItem('loggedUser', JSON.stringify(body));
-		cy.visit('');
-	});
+  cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
+    username, password
+  }).then(({ body }) => {
+    localStorage.setItem('loggedUser', JSON.stringify(body));
+    cy.visit('');
+  });
 });
 
 Cypress.Commands.add('logout', () => {
-	localStorage.removeItem('loggedUser');
+  localStorage.removeItem('loggedUser');
 });
 
 Cypress.Commands.add('createBlog', ({ title, author, url }) => {
-	cy.request({
-		method: 'POST',
-		url: `${Cypress.env('BACKEND')}/blogs`,
-		body: { title, author, url },
-		headers: {
-			Authorization: `Bearer ${JSON.parse(localStorage.getItem('loggedUser')).token}`
-		}
-	});
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('BACKEND')}/blogs`,
+    body: { title, author, url },
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('loggedUser')).token}`
+    }
+  });
 });
