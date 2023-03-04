@@ -51,12 +51,11 @@ const App = () => {
 
 		try {
 			const user = await loginService.login({
-				username, password
+				username,
+				password
 			});
 
-			window.localStorage.setItem(
-				'loggedUser', JSON.stringify(user)
-			);
+			window.localStorage.setItem('loggedUser', JSON.stringify(user));
 
 			blogService.setToken(user.token);
 			setUser(user);
@@ -89,7 +88,7 @@ const App = () => {
 			setBlogsSortedByLikes([...blogs, newBlog]);
 			setMessage(`Added a new blog ${newBlog.title} by ${newBlog.author}`);
 			setTimeout(() => clearNotification(), 5000);
-		} catch(e) {
+		} catch (e) {
 			setIsError(true);
 			setMessage('Error creating a blog');
 			setTimeout(() => clearNotification(), 5000);
@@ -104,8 +103,10 @@ const App = () => {
 				name: user.name,
 				username: user.username
 			};
-			setBlogsSortedByLikes(blogs.map(b => b.id !== updatedBlog.id ? b : updatedBlog));
-		} catch(e) {
+			setBlogsSortedByLikes(
+				blogs.map((b) => (b.id !== updatedBlog.id ? b : updatedBlog))
+			);
+		} catch (e) {
 			setIsError(true);
 			setMessage('Error updating blog');
 			setTimeout(() => clearNotification(), 5000);
@@ -115,7 +116,7 @@ const App = () => {
 	const removeBlog = async (id) => {
 		try {
 			await blogService.remove(id);
-			setBlogsSortedByLikes(blogs.filter(b => b.id !== id));
+			setBlogsSortedByLikes(blogs.filter((b) => b.id !== id));
 			setMessage('Blog removed successfully');
 			setTimeout(() => clearNotification(), 5000);
 		} catch (e) {
@@ -128,7 +129,7 @@ const App = () => {
 	if (user === null) {
 		return (
 			<div>
-				{message && <Notification message={message} error={isError}/>}
+				{message && <Notification message={message} error={isError} />}
 				<Login
 					username={username}
 					password={password}
@@ -141,14 +142,16 @@ const App = () => {
 	} else {
 		return (
 			<div>
-				{message && <Notification message={message} error={isError}/>}
-				<div>{user.username} logged in
+				{message && <Notification message={message} error={isError} />}
+				<div>
+					{user.username} logged in
 					<button onClick={handleLogout}>logout</button>
 				</div>
-				<Toggleable buttonLabel='new blog' ref={blogFormRef}>
+				<Toggleable buttonLabel="new blog" ref={blogFormRef}>
 					<BlogForm createBlog={addBlog} />
 				</Toggleable>
-				<Blogs blogs={blogs}
+				<Blogs
+					blogs={blogs}
 					user={user}
 					updateBlog={updateBlog}
 					removeBlog={removeBlog}

@@ -26,21 +26,25 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
 	};
 
 	return (
-		<div className='blog-container'>
-			<div className='blog-info'>
+		<div className="blog-container">
+			<div className="blog-info">
 				{blog.title} {blog.author}
 				<button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
 			</div>
-			<div style={shownWhenVisible} className='blog-details'>
+			<div style={shownWhenVisible} className="blog-details">
 				<a href={addHttp(blog.url)}>{addHttp(blog.url)}</a>
-				<div className='number-likes'>
+				<div className="number-likes">
 					likes {blog.likes}
-					<button className='like-button' onClick={() => increaseLikes(blog)}>like</button>
+					<button className="like-button" onClick={() => increaseLikes(blog)}>
+						like
+					</button>
 				</div>
 				<div>{blog.user.name}</div>
-				{user.username === blog.user.username && <div>
-					<button onClick={() => deleteBlog(blog.id)}>remove</button>
-				</div>}
+				{user.username === blog.user.username && (
+					<div>
+						<button onClick={() => deleteBlog(blog.id)}>remove</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);

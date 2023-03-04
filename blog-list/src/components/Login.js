@@ -28,7 +28,9 @@ const Login = ({
 					onChange={handlePasswordChange}
 				/>
 			</div>
-			<button id="submit-login" type="submit">login</button>
+			<button id="submit-login" type="submit">
+				login
+			</button>
 		</form>
 	);
 };
