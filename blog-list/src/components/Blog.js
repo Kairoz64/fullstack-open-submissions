@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { incrementLike, deleteBlog } from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
+import './Blog.css';
 
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
