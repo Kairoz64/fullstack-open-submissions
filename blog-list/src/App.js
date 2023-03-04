@@ -11,19 +11,10 @@ import loginService from './services/login';
 import './index.css';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
   const blogFormRef = useRef();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const blogs = await blogService.getAll();
-      setBlogsSortedByLikes(blogs);
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser');
@@ -34,11 +25,6 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
-
-  const setBlogsSortedByLikes = (blogs) => {
-    const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
-    setBlogs(sortedBlogs);
-  };
 
   const login = async ({ username, password }) => {
     try {
@@ -61,28 +47,13 @@ const App = () => {
     dispatch(setNotification('Log out successfully!', 5));
   };
 
-  const addBlog = async (blogObject) => {
-    try {
-      blogFormRef.current.toggleVisibility();
-      const newBlog = await blogService.create(blogObject);
-      newBlog.user = {
-        id: newBlog.user,
-        name: user.name,
-        username: user.username
-      };
-      setBlogsSortedByLikes([...blogs, newBlog]);
-      dispatch(
-        setNotification(
-          `Added a new blog ${newBlog.title} by ${newBlog.author}`,
-          5
-        )
-      );
-    } catch (e) {
-      dispatch(setNotification('Error creating a blog', 5, true));
-    }
+  const toggle = () => {
+    blogFormRef.current.toggleVisibility();
   };
 
-  const updateBlog = async (id, blogObject) => {
+  //blogFormRef.current.toggleVisibility();
+
+  /*  const updateBlog = async (id, blogObject) => {
     try {
       const updatedBlog = await blogService.update(id, blogObject);
       updatedBlog.user = {
@@ -96,9 +67,9 @@ const App = () => {
     } catch (e) {
       dispatch(setNotification('Error updating blog', 5, true));
     }
-  };
+  };*/
 
-  const removeBlog = async (id) => {
+  /*  const removeBlog = async (id) => {
     try {
       await blogService.remove(id);
       setBlogsSortedByLikes(blogs.filter((b) => b.id !== id));
@@ -106,7 +77,7 @@ const App = () => {
     } catch (e) {
       dispatch(setNotification('Error removing blog', 5, true));
     }
-  };
+  };*/
 
   const renderLogin = () => {
     return (
@@ -126,14 +97,9 @@ const App = () => {
           <button onClick={handleLogout}>logout</button>
         </div>
         <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} />
+          <BlogForm toggle={toggle} />
         </Toggleable>
-        <Blogs
-          blogs={blogs}
-          user={user}
-          updateBlog={updateBlog}
-          removeBlog={removeBlog}
-        />
+        <Blogs user={user} />
       </div>
     );
   };
