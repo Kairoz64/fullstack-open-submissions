@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { setNotification } from './reducers/notificationReducer';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
 import Login from './components/Login';
@@ -10,13 +12,10 @@ import './index.css';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [isError, setIsError] = useState(false);
 
   const blogFormRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,30 +40,17 @@ const App = () => {
     setBlogs(sortedBlogs);
   };
 
-  const clearNotification = () => {
-    setMessage(null);
-    setIsError(false);
-  };
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
+  const login = async ({ username, password }) => {
     try {
       const user = await loginService.login({
         username,
         password
       });
-
       window.localStorage.setItem('loggedUser', JSON.stringify(user));
-
       blogService.setToken(user.token);
       setUser(user);
-      setUsername('');
-      setPassword('');
     } catch (e) {
-      setIsError(true);
-      setMessage('Wrong credentials');
-      setTimeout(() => clearNotification(), 5000);
+      dispatch(setNotification('Wrong credentials', 5, true));
     }
   };
 
@@ -72,8 +58,7 @@ const App = () => {
     window.localStorage.removeItem('loggedUser');
     setUser(null);
     blogService.setToken(null);
-    setMessage('Log out successfully');
-    setTimeout(() => clearNotification(), 5000);
+    dispatch(setNotification('Log out successfully!', 5));
   };
 
   const addBlog = async (blogObject) => {
@@ -86,12 +71,14 @@ const App = () => {
         username: user.username
       };
       setBlogsSortedByLikes([...blogs, newBlog]);
-      setMessage(`Added a new blog ${newBlog.title} by ${newBlog.author}`);
-      setTimeout(() => clearNotification(), 5000);
+      dispatch(
+        setNotification(
+          `Added a new blog ${newBlog.title} by ${newBlog.author}`,
+          5
+        )
+      );
     } catch (e) {
-      setIsError(true);
-      setMessage('Error creating a blog');
-      setTimeout(() => clearNotification(), 5000);
+      dispatch(setNotification('Error creating a blog', 5, true));
     }
   };
 
@@ -107,9 +94,7 @@ const App = () => {
         blogs.map((b) => (b.id !== updatedBlog.id ? b : updatedBlog))
       );
     } catch (e) {
-      setIsError(true);
-      setMessage('Error updating blog');
-      setTimeout(() => clearNotification(), 5000);
+      dispatch(setNotification('Error updating blog', 5, true));
     }
   };
 
@@ -117,32 +102,25 @@ const App = () => {
     try {
       await blogService.remove(id);
       setBlogsSortedByLikes(blogs.filter((b) => b.id !== id));
-      setMessage('Blog removed successfully');
-      setTimeout(() => clearNotification(), 5000);
+      dispatch(setNotification('Blog removed successfully', 5));
     } catch (e) {
-      setIsError(true);
-      setMessage('Error removing blog');
-      setTimeout(() => clearNotification(), 5000);
+      dispatch(setNotification('Error removing blog', 5, true));
     }
   };
 
-  if (user === null) {
+  const renderLogin = () => {
     return (
       <div>
-        {message && <Notification message={message} error={isError} />}
-        <Login
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
-        />
+        <Notification />
+        <Login login={login} />
       </div>
     );
-  } else {
+  };
+
+  const renderApp = () => {
     return (
       <div>
-        {message && <Notification message={message} error={isError} />}
+        <Notification />
         <div>
           {user.username} logged in
           <button onClick={handleLogout}>logout</button>
@@ -158,6 +136,12 @@ const App = () => {
         />
       </div>
     );
+  };
+
+  if (user) {
+    return renderApp();
+  } else {
+    return renderLogin();
   }
 };
 

@@ -21,16 +21,15 @@ describe('<Blog />', () => {
         id: '0001'
       }
     };
-    container = render(<Blog blog={blog} user={blog.user} updateBlog={updateBlog}/>).container;
+    container = render(
+      <Blog blog={blog} user={blog.user} updateBlog={updateBlog} />
+    ).container;
   });
 
   test('renders blogs title and author, does not show url and likes', () => {
-
     const blogInfo = container.querySelector('.blog-info');
     const blogDetails = container.querySelector('.blog-details');
-    expect(blogInfo).toHaveTextContent(
-      `${blog.title} ${blog.author}`
-    );
+    expect(blogInfo).toHaveTextContent(`${blog.title} ${blog.author}`);
     expect(blogDetails).toHaveStyle('display: none');
   });
 

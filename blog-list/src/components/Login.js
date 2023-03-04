@@ -1,35 +1,41 @@
-const Login = ({
-  username,
-  password,
-  handleUsernameChange,
-  handlePasswordChange,
-  handleSubmit
-}) => {
+import { useState } from 'react';
+
+const Login = ({ login }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    await login({ username, password });
+    setUsername('');
+    setPassword('');
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleLogin}>
       <h2>Login</h2>
       <div>
-				username
+        username
         <input
           id="username-login"
           type="text"
           value={username}
           name="Username"
-          onChange={handleUsernameChange}
+          onChange={({ target }) => setUsername(target.value)}
         />
       </div>
       <div>
-				password
+        password
         <input
           id="password-login"
           type="password"
           value={password}
           name="Password"
-          onChange={handlePasswordChange}
+          onChange={({ target }) => setPassword(target.value)}
         />
       </div>
       <button id="submit-login" type="submit">
-				login
+        login
       </button>
     </form>
   );

@@ -26,13 +26,16 @@
 
 Cypress.Commands.add('createUser', ({ username, name, password }) => {
   cy.request('POST', `${Cypress.env('BACKEND')}/users`, {
-    username, name, password
+    username,
+    name,
+    password
   });
 });
 
 Cypress.Commands.add('login', ({ username, password }) => {
   cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
-    username, password
+    username,
+    password
   }).then(({ body }) => {
     localStorage.setItem('loggedUser', JSON.stringify(body));
     cy.visit('');
@@ -49,7 +52,9 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
     url: `${Cypress.env('BACKEND')}/blogs`,
     body: { title, author, url },
     headers: {
-      Authorization: `Bearer ${JSON.parse(localStorage.getItem('loggedUser')).token}`
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem('loggedUser')).token
+      }`
     }
   });
 });
