@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUser, unsetUser } from './reducers/userReducer';
+import { setLoggedUser, unsetLoggedUser } from './reducers/loggedUserReducer';
 import { setNotification } from './reducers/notificationReducer';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
@@ -10,7 +10,7 @@ import Notification from './components/Notification';
 import blogService from './services/blogs';
 
 const App = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.loggedUser);
   const dispatch = useDispatch();
 
   const blogFormRef = useRef();
@@ -20,14 +20,14 @@ const App = () => {
 
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      dispatch(setUser(user));
+      dispatch(setLoggedUser(user));
       blogService.setToken(user.token);
     }
   }, []);
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedUser');
-    dispatch(unsetUser());
+    dispatch(unsetLoggedUser());
     blogService.setToken(null);
     dispatch(setNotification('Log out successfully!', 5));
   };

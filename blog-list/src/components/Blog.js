@@ -5,7 +5,7 @@ import { setNotification } from '../reducers/notificationReducer';
 import './Blog.css';
 
 const Blog = ({ blog }) => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.loggedUser);
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const shownWhenVisible = { display: visible ? '' : 'none' };

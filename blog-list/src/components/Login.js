@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../reducers/userReducer';
+import { setLoggedUser } from '../reducers/loggedUserReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import loginService from '../services/login';
 import blogService from '../services/blogs';
@@ -18,7 +18,7 @@ const Login = () => {
       });
       window.localStorage.setItem('loggedUser', JSON.stringify(user));
       blogService.setToken(user.token);
-      dispatch(setUser(user));
+      dispatch(setLoggedUser(user));
     } catch (e) {
       dispatch(setNotification('Wrong credentials', 5, true));
     }
