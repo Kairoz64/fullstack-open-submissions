@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser, unsetUser } from './reducers/userReducer';
 import { setNotification } from './reducers/notificationReducer';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
@@ -7,41 +8,26 @@ import Login from './components/Login';
 import Toggleable from './components/Toggleable';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
-import loginService from './services/login';
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const blogFormRef = useRef();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser');
 
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(setUser(user));
       blogService.setToken(user.token);
     }
   }, []);
 
-  const login = async ({ username, password }) => {
-    try {
-      const user = await loginService.login({
-        username,
-        password
-      });
-      window.localStorage.setItem('loggedUser', JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-    } catch (e) {
-      dispatch(setNotification('Wrong credentials', 5, true));
-    }
-  };
-
   const handleLogout = () => {
     window.localStorage.removeItem('loggedUser');
-    setUser(null);
+    dispatch(unsetUser());
     blogService.setToken(null);
     dispatch(setNotification('Log out successfully!', 5));
   };
@@ -50,36 +36,25 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
   };
 
-  const renderLogin = () => {
-    return (
-      <div>
-        <Notification />
-        <Login login={login} />
-      </div>
-    );
-  };
-
-  const renderApp = () => {
-    return (
-      <div>
-        <Notification />
-        <div>
-          {user.username} logged in
-          <button onClick={handleLogout}>logout</button>
-        </div>
-        <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-          <BlogForm toggle={toggle} />
-        </Toggleable>
-        <Blogs user={user} />
-      </div>
-    );
-  };
-
-  if (user) {
-    return renderApp();
-  } else {
-    return renderLogin();
-  }
+  return (
+    <div>
+      <Notification />
+      {!user && <Login />}
+      {user && (
+        <>
+          <div>
+            {' '}
+            {user.username} logged in
+            <button onClick={handleLogout}>logout</button>
+          </div>
+          <Toggleable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm toggle={toggle} />
+          </Toggleable>
+          <Blogs />
+        </>
+      )}
+    </div>
+  );
 };
 
 export default App;
