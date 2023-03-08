@@ -9,6 +9,7 @@ import Login from './components/Login';
 import Toggleable from './components/Toggleable';
 import Notification from './components/Notification';
 import Users from './components/Users';
+import UserView from './components/UserView';
 import blogService from './services/blogs';
 
 const App = () => {
@@ -49,6 +50,7 @@ const App = () => {
             <button onClick={handleLogout}>logout</button>
           </div>
           <Routes>
+            <Route path="/users/:id" element={<UserView />} />
             <Route path="/users" element={<Users />} />
             <Route path="/" element={
               <>
