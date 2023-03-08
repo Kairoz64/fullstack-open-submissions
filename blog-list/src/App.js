@@ -5,6 +5,7 @@ import { setLoggedUser, unsetLoggedUser } from './reducers/loggedUserReducer';
 import { setNotification } from './reducers/notificationReducer';
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
+import BlogView from './components/BlogView';
 import Login from './components/Login';
 import Toggleable from './components/Toggleable';
 import Notification from './components/Notification';
@@ -41,6 +42,7 @@ const App = () => {
 
   return (
     <div>
+      <h2>blogs</h2>
       <Notification />
       {!user && <Login />}
       {user && (
@@ -50,16 +52,20 @@ const App = () => {
             <button onClick={handleLogout}>logout</button>
           </div>
           <Routes>
+            <Route path="/blogs/:id" element={<BlogView />} />
             <Route path="/users/:id" element={<UserView />} />
             <Route path="/users" element={<Users />} />
-            <Route path="/" element={
-              <>
-                <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-                  <BlogForm toggle={toggle} />
-                </Toggleable>
-                <Blogs />
-              </>
-            }/>
+            <Route
+              path="/"
+              element={
+                <>
+                  <Toggleable buttonLabel="new blog" ref={blogFormRef}>
+                    <BlogForm toggle={toggle} />
+                  </Toggleable>
+                  <Blogs />
+                </>
+              }
+            />
           </Routes>
         </>
       )}

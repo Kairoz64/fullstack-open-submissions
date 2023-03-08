@@ -5,7 +5,7 @@ import { initializeUsers } from '../reducers/userReducer';
 
 const UserView = () => {
   const id = useParams().id;
-  const user = useSelector(state => state.users.find(u => u.id === id));
+  const user = useSelector((state) => state.users.find((u) => u.id === id));
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -20,7 +20,9 @@ const UserView = () => {
         <h2>{user.name}</h2>
         <h3>added blogs</h3>
         <ul>
-          {user.blogs.map(b => <li key={b.id}>{b.title}</li>)}
+          {user.blogs.map((b) => (
+            <li key={b.id}>{b.title}</li>
+          ))}
         </ul>
       </div>
     );

@@ -22,7 +22,7 @@ const Users = () => {
             <th>&nbsp;</th>
             <th>blogs created</th>
           </tr>
-          {users.map(u => {
+          {users.map((u) => {
             return (
               <tr key={u.id}>
                 <td>
