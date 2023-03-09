@@ -60,6 +60,12 @@ const BlogView = () => {
           </div>
         )}
         <div>{`added by ${blog.user.name}`}</div>
+        <h3>comments</h3>
+        <ul>
+          {blog.comments.map((c) => (
+            <li key={c.id}>{c.content}</li>
+          ))}
+        </ul>
       </div>
     );
   }
