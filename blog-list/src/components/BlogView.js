@@ -1,8 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { initializeBlogs } from '../reducers/blogReducer';
-import { incrementLike, deleteBlog } from '../reducers/blogReducer';
+import {
+  initializeBlogs,
+  incrementLike,
+  deleteBlog,
+  createComment
+} from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
 const BlogView = () => {
@@ -10,6 +14,7 @@ const BlogView = () => {
   const navigate = useNavigate();
   const blog = useSelector((state) => state.blogs.find((b) => b.id === id));
   const user = useSelector((state) => state.loggedUser);
+  const [newComment, setNewComment] = useState('');
 
   const dispatch = useDispatch();
 
@@ -41,6 +46,16 @@ const BlogView = () => {
     }
   };
 
+  const addComment = async (blogId, content) => {
+    try {
+      await dispatch(createComment({ blogId, content }));
+      dispatch(setNotification('Comment added successfully', 5));
+      setNewComment('');
+    } catch (e) {
+      dispatch(setNotification('Error adding comment', 5, true));
+    }
+  };
+
   if (!blog) {
     return null;
   } else {
@@ -61,6 +76,21 @@ const BlogView = () => {
         )}
         <div>{`added by ${blog.user.name}`}</div>
         <h3>comments</h3>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            addComment(blog.id, newComment);
+          }}
+        >
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => {
+              setNewComment(e.target.value);
+            }}
+          />
+          <button>add comment</button>
+        </form>
         <ul>
           {blog.comments.map((c) => (
             <li key={c.id}>{c.content}</li>

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { initializeUsers } from '../reducers/userReducer';
 
 const UserView = () => {
@@ -21,7 +21,9 @@ const UserView = () => {
         <h3>added blogs</h3>
         <ul>
           {user.blogs.map((b) => (
-            <li key={b.id}>{b.title}</li>
+            <li key={b.id}>
+              <Link to={`/blogs/${b.id}`}>{b.title}</Link>
+            </li>
           ))}
         </ul>
       </div>
