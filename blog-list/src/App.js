@@ -12,6 +12,14 @@ import Notification from './components/Notification';
 import Users from './components/Users';
 import UserView from './components/UserView';
 import blogService from './services/blogs';
+import styled from 'styled-components';
+import './index.css';
+
+const TitleApp = styled.h2`
+  color: #153cb3;
+  font-weight: 900;
+  font-size: 36px;
+`;
 
 const App = () => {
   const user = useSelector((state) => state.loggedUser);
@@ -36,7 +44,7 @@ const App = () => {
   return (
     <div>
       <NavBar />
-      <h2>blogs</h2>
+      <TitleApp>Blogs</TitleApp>
       <Notification />
       {!user && <Login />}
       {user && (
@@ -49,7 +57,7 @@ const App = () => {
               path="/"
               element={
                 <>
-                  <Toggleable buttonLabel="new blog" ref={blogFormRef}>
+                  <Toggleable buttonLabel="New blog" ref={blogFormRef}>
                     <BlogForm toggle={toggle} />
                   </Toggleable>
                   <Blogs />

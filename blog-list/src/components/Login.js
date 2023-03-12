@@ -4,6 +4,25 @@ import { setLoggedUser } from '../reducers/loggedUserReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import loginService from '../services/login';
 import blogService from '../services/blogs';
+import styled from 'styled-components';
+
+const LoginButton = styled.button`
+  background: #ffbf34;
+  padding: 8px 12px;
+  border:  solid #ffd885 2px;
+  border-radius: 5px;
+  color: #000;
+  font-weight: 900;
+  margin-top: 8px;
+`;
+
+const Input = styled.input`
+  background: #fff;
+  padding: 5px 10px;
+  border-radius: 3px;
+  margin: 4px 8px;
+  color: #000;
+`;
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -35,8 +54,8 @@ const Login = () => {
     <form onSubmit={handleLogin}>
       <h2>Login</h2>
       <div>
-        username
-        <input
+        Username
+        <Input
           id="username-login"
           type="text"
           value={username}
@@ -45,8 +64,8 @@ const Login = () => {
         />
       </div>
       <div>
-        password
-        <input
+        Password
+        <Input
           id="password-login"
           type="password"
           value={password}
@@ -54,9 +73,9 @@ const Login = () => {
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button id="submit-login" type="submit">
+      <LoginButton id="submit-login" type="submit">
         login
-      </button>
+      </LoginButton>
     </form>
   );
 };
