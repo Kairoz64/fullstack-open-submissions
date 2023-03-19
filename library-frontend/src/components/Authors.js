@@ -2,10 +2,11 @@ import { useQuery } from '@apollo/client';
 import { ALL_AUTHORS } from '../queries';
 
 const Authors = (props) => {
+  const res = useQuery(ALL_AUTHORS);
+
   if (!props.show) {
     return null;
   }
-  const res = useQuery(ALL_AUTHORS);
 
   if (res.loading) {
     return <div>Loading...</div>;
