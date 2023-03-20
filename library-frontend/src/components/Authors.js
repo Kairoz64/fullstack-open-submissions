@@ -25,9 +25,9 @@ const Authors = (props) => {
     return <div>Loading...</div>;
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    setBirthYear({
+    await setBirthYear({
       variables: { name, born: parseInt(born) }
     });
     setName('');
