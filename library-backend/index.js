@@ -1,6 +1,23 @@
 const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
-const { v4: uuid } = require('uuid');
+const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
+const Book = require('./models/book');
+const Author = require('./models/author');
+require('dotenv').config();
+const MONGODB_URI = process.env.MONGODB_URI;
+const PORT = process.env.PORT;
+
+console.log('Connecting to', MONGODB_URI);
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((err) => {
+    console.log('Error connecting to MongoDB: ', err.message);
+  });
 
 let authors = [
   {
@@ -102,7 +119,7 @@ const typeDefs = `
   type Book {
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     id: ID!
     genres: [String!]!
   }
@@ -140,14 +157,14 @@ const resolvers = {
     bookCount: (root) => books.filter((b) => b.author === root.name).length
   },
   Mutation: {
-    addBook: (root, args) => {
-      const book = { ...args, id: uuid() };
-      const authorExists = authors.some((a) => a.name === args.author);
-      if (!authorExists) {
-        authors = authors.concat({ name: args.author, id: uuid() });
+    addBook: async (root, args) => {
+      let author = await Author.findOne({ name: args.author });
+      if (!author) {
+        const newAuthor = new Author({ name: args.author });
+        author = await newAuthor.save();
       }
-      books = books.concat(book);
-      return book;
+      const book = new Book({ ...args, author: author._id });
+      return book.save();
     },
     editAuthor: (root, args) => {
       const authorToUpdate = authors.find((a) => a.name === args.name);
@@ -182,7 +199,7 @@ const resolvers = {
 
       return filteredBooks;
     },
-    allAuthors: () => authors
+    allAuthors: async () => Author.find({})
   }
 };
 
@@ -192,7 +209,7 @@ const server = new ApolloServer({
 });
 
 startStandaloneServer(server, {
-  listen: { port: 4000 }
+  listen: { port: PORT }
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
