@@ -1,5 +1,6 @@
 const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
+const { GraphQLError } = require('graphql');
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 const Book = require('./models/book');
@@ -68,10 +69,33 @@ const resolvers = {
       let author = await Author.findOne({ name: args.author });
       if (!author) {
         const newAuthor = new Author({ name: args.author });
-        author = await newAuthor.save();
+
+        try {
+          author = await newAuthor.save();
+        } catch (e) {
+          throw new GraphQLError('Author name must be length 4', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.author,
+              error: e
+            }
+          });
+        }
       }
       const book = new Book({ ...args, author: author._id });
-      return book.save();
+      try {
+        await book.save();
+      } catch (e) {
+        throw new GraphQLError('Book title must be length 5 and unique', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.title,
+            error: e
+          }
+        });
+      }
+
+      return book;
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name });
