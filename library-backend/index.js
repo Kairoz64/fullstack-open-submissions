@@ -126,7 +126,7 @@ const resolvers = {
         });
       }
 
-      return book;
+      return book.populate('author');
     },
     editAuthor: async (root, args, context) => {
       const currentUser = context.currentUser;
