@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { ALL_AUTHORS, SET_BIRTHYEAR } from '../queries';
 
-const Authors = (props) => {
+const Authors = ({ show, token }) => {
   const [name, setName] = useState('');
   const [born, setBorn] = useState('');
   const [setBirthYear] = useMutation(SET_BIRTHYEAR, {
@@ -17,7 +17,7 @@ const Authors = (props) => {
   });
   const res = useQuery(ALL_AUTHORS);
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
@@ -53,29 +53,34 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <h2>Set birthyear</h2>
-      <form onSubmit={onSubmit}>
-        <div>
-          name
-          <select value={name} onChange={({ target }) => setName(target.value)}>
-            <option value=""></option>
-            {res.data.allAuthors.map((a) => (
-              <option value={a.name} key={a.id}>
-                {a.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          born
-          <input
-            type="number"
-            value={born}
-            onChange={({ target }) => setBorn(target.value)}
-          />
-        </div>
-        <button>update author</button>
-      </form>
+      {token && (
+        <form onSubmit={onSubmit}>
+          <h2>Set birthyear</h2>
+          <div>
+            name
+            <select
+              value={name}
+              onChange={({ target }) => setName(target.value)}
+            >
+              <option value=""></option>
+              {res.data.allAuthors.map((a) => (
+                <option value={a.name} key={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            born
+            <input
+              type="number"
+              value={born}
+              onChange={({ target }) => setBorn(target.value)}
+            />
+          </div>
+          <button>update author</button>
+        </form>
+      )}
     </div>
   );
 };

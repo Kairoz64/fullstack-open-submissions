@@ -5,7 +5,7 @@ module.exports = {
     node: true,
     'jest/globals': true
   },
-  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  extends: ['react-app', 'react-app/jest'],
   overrides: [],
   parserOptions: {
     ecmaFeatures: {
