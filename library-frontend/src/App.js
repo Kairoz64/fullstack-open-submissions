@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSubscription } from '@apollo/client';
+import { useApolloClient, useSubscription } from '@apollo/client';
 import { BOOK_ADDED } from './queries';
 import Authors from './components/Authors';
 import Books from './components/Books';
@@ -8,12 +8,16 @@ import LoginForm from './components/LoginForm';
 import Recommend from './components/Recommend';
 
 const App = () => {
+  const client = useApolloClient();
   const [token, setToken] = useState(null);
   const [page, setPage] = useState('authors');
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
       const book = data.data.bookAdded;
       window.alert(`Added ${book.title} by ${book.author.name}`);
+      client.refetchQueries({
+        include: ['AllBooks']
+      });
     }
   });
 
@@ -25,6 +29,7 @@ const App = () => {
   const logout = () => {
     setToken(null);
     localStorage.removeItem('user-token');
+    client.resetStore();
   };
 
   return (
