@@ -1,25 +1,28 @@
-import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { ALL_BOOKS } from '../queries';
+import { ALL_BOOKS, USER } from '../queries';
 
-const Books = (props) => {
-  const [genre, setGenre] = useState('');
+const Recommend = (props) => {
+  const userRes = useQuery(USER);
   const res = useQuery(ALL_BOOKS, {
-    variables: { genre }
+    variables: { genre: userRes.loading ? null : userRes.data.me.favoriteGenre }
   });
 
   if (!props.show) {
     return null;
   }
 
-  if (res.loading) {
+  if (res.loading || userRes.loading) {
     return <div>Loading...</div>;
   }
 
+  const favoriteGenre = userRes.data.me.favoriteGenre;
+
   return (
     <div>
-      <h2>books</h2>
-
+      <h2>recommendations</h2>
+      <div>
+        books in your favorite genre <b>{favoriteGenre}</b>
+      </div>
       <table>
         <tbody>
           <tr>
@@ -36,13 +39,8 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
-      <div>
-        <button onClick={() => setGenre('')}>all</button>
-        <button onClick={() => setGenre('magic')}>magic</button>
-        <button onClick={() => setGenre('hacks')}>hacks</button>
-      </div>
     </div>
   );
 };
 
-export default Books;
+export default Recommend;
