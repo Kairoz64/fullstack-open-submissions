@@ -9,8 +9,7 @@ const User = require('./models/user');
 const resolvers = {
   Author: {
     bookCount: async (root) => {
-      const books = await Book.find({ author: root.id });
-      return books.length;
+      return root.bookCount;
     }
   },
   Mutation: {
@@ -44,6 +43,8 @@ const resolvers = {
       const book = new Book({ ...args, author: author._id });
       try {
         await book.save();
+        author.bookCount = author.bookCount + 1;
+        await author.save();
       } catch (e) {
         throw new GraphQLError('book title must be min length 5 and unique', {
           extensions: {
